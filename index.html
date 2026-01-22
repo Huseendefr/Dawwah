@@ -184,12 +184,10 @@
         </div>
     </main>
     
-    <!-- زر المساعد الذكي -->
-    <button id="ai-btn" class="fixed bottom-6 right-6 w-16 h-16 bg-primary text-white rounded-2xl shadow-2xl shadow-primary/40 flex items-center justify-center z-50 transition-transform active:scale-90 border-4 border-white dark:border-slate-900">
-        <div class="flex flex-col items-center">
-            <span class="material-icons-round text-3xl">auto_awesome</span>
-            <span class="text-[9px] font-bold uppercase mt-[-4px]">AI مساعد</span>
-        </div>
+    <!-- زر المساعد الذكي - في الأعلى -->
+    <button id="ai-btn" class="fixed top-4 right-4 h-10 px-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center z-50 transition-transform active:scale-95 gap-2">
+        <span class="material-icons-round text-xl">auto_awesome</span>
+        <span class="text-xs font-bold">المساعد الذكي</span>
     </button>
     
     <!-- نافذة المساعد الذكي -->
@@ -217,11 +215,12 @@
                         <span class="material-icons-round text-primary text-sm">auto_awesome</span>
                     </div>
                     <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3 max-w-[85%]">
-                        <p class="text-sm">مرحباً! أنا المساعد الذكي. يمكنني مساعدتك في تحليل بيانات المناشط. جرب أن تسألني:</p>
+                        <p class="text-sm">مرحباً! أنا المساعد الذكي للمناشط. يمكنني تحليل البيانات والإجابة عن استفساراتك. جرّب أن تسألني:</p>
                         <ul class="text-xs text-slate-600 dark:text-slate-400 mt-2 space-y-1">
-                            <li>• كم عدد المناشط في شهر يناير؟</li>
-                            <li>• من هو أكثر منفذ نشاطاً؟</li>
-                            <li>• ما هي أكثر التصنيفات تكراراً؟</li>
+                            <li>• كم إجمالي المستفيدين هذا الشهر؟</li>
+                            <li>• من هو أكثر داعية نشاطاً؟</li>
+                            <li>• ما هو التصنيف الأكثر تكراراً؟</li>
+                            <li>• كم عدد مناشط الشيخ نايف الزهراني؟</li>
                         </ul>
                     </div>
                 </div>
@@ -237,7 +236,7 @@
         </div>
     </div>
     
-    <!-- ========== شريط التنقل (المعدل) ========== -->
+    <!-- شريط التنقل -->
     <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-slate-200 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
         <a href="index.html" class="flex flex-col items-center text-primary">
             <span class="material-icons-round">dashboard</span>
@@ -259,7 +258,7 @@
     
     <!-- زر الوضع الداكن -->
     <button class="fixed top-4 left-4 w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center z-50 border border-slate-200 dark:border-slate-700" onclick="document.documentElement.classList.toggle('dark')">
-        <span class="material-icons-round text-slate-700 dark:text-slate-200">dark_mode</span>
+        <span class="material-icons-round text-slate-700 dark:text-slate-200 text-xl">dark_mode</span>
     </button>
 
     <script>
@@ -538,8 +537,25 @@
             showTypingIndicator();
             
             try {
-                // تجهيز سياق البيانات
+                // تجهيز سياق البيانات من قاعدة البيانات
                 const context = prepareDataContext();
+                
+                // System Prompt بالعربية
+                const systemPrompt = `أنت مساعد ذكي متخصص في تحليل بيانات المناشط والبرامج الدعوية.
+
+## تعليمات صارمة:
+1. أجب دائماً باللغة العربية الفصحى فقط
+2. أجب فقط بناءً على البيانات المقدمة لك في السياق
+3. إذا لم تجد معلومة، قل "هذه المعلومة غير متوفرة في البيانات الحالية"
+4. لا تختلق أو تفترض معلومات غير موجودة
+5. كن دقيقاً في الأرقام والإحصائيات
+6. اجعل إجاباتك مختصرة ومباشرة
+7. استخدم الأرقام العربية عند الإمكان
+
+## تنسيق الإجابة:
+- كن مختصراً ومفيداً
+- استخدم النقاط عند سرد عدة عناصر
+- أضف الأرقام والنسب المئوية عند الإمكان`;
                 
                 const response = await fetch(CONFIG.AI_ENDPOINT, {
                     method: 'POST',
@@ -548,7 +564,8 @@
                     },
                     body: JSON.stringify({
                         userQuestion: question,
-                        context: context
+                        context: context,
+                        systemPrompt: systemPrompt
                     })
                 });
                 
@@ -570,68 +587,128 @@
         }
 
         function prepareDataContext() {
-            // تجهيز ملخص للبيانات للمساعد الذكي
+            // التحقق من وجود بيانات
+            if (!allData || allData.length === 0) {
+                return 'لا توجد بيانات متاحة حالياً. يرجى التأكد من اتصال قاعدة البيانات.';
+            }
+            
+            // تجهيز ملخص شامل للبيانات من قاعدة البيانات
             const summary = {
                 totalPrograms: allData.length,
                 totalBeneficiaries: allData.reduce((sum, item) => sum + (item.beneficiariesCount || 0), 0),
                 classifications: {},
                 executors: {},
+                supervisors: {},
                 months: {},
-                programTypes: { 'حضوري': 0, 'عن بعد': 0 }
+                programTypes: { 'حضوري': 0, 'عن بعد': 0 },
+                programCategories: {},
+                targetAudiences: {}
             };
             
             allData.forEach(item => {
                 // التصنيفات
                 const cls = item.classification || 'غير محدد';
-                summary.classifications[cls] = (summary.classifications[cls] || 0) + 1;
+                if (!summary.classifications[cls]) {
+                    summary.classifications[cls] = { count: 0, beneficiaries: 0 };
+                }
+                summary.classifications[cls].count++;
+                summary.classifications[cls].beneficiaries += item.beneficiariesCount || 0;
                 
-                // المنفذون
+                // المنفذون (الدعاة)
                 const exec = item.executorName || 'غير محدد';
                 if (!summary.executors[exec]) {
-                    summary.executors[exec] = { count: 0, beneficiaries: 0 };
+                    summary.executors[exec] = { count: 0, beneficiaries: 0, programs: [] };
                 }
                 summary.executors[exec].count++;
                 summary.executors[exec].beneficiaries += item.beneficiariesCount || 0;
+                summary.executors[exec].programs.push(item.programName);
+                
+                // المشرفون
+                const sup = item.supervisorName || 'غير محدد';
+                if (!summary.supervisors[sup]) {
+                    summary.supervisors[sup] = { count: 0 };
+                }
+                summary.supervisors[sup].count++;
+                
+                // فئات البرامج
+                const cat = item.programCategory || 'غير محدد';
+                summary.programCategories[cat] = (summary.programCategories[cat] || 0) + 1;
                 
                 // الشهور
                 if (item.executionDate) {
                     const parts = item.executionDate.split('/');
                     if (parts.length >= 2) {
-                        const month = parts[1];
-                        summary.months[month] = (summary.months[month] || 0) + 1;
+                        const monthNum = parts[1];
+                        const monthNames = {
+                            '01': 'يناير', '02': 'فبراير', '03': 'مارس', '04': 'أبريل',
+                            '05': 'مايو', '06': 'يونيو', '07': 'يوليو', '08': 'أغسطس',
+                            '09': 'سبتمبر', '10': 'أكتوبر', '11': 'نوفمبر', '12': 'ديسمبر'
+                        };
+                        const month = monthNames[monthNum] || monthNum;
+                        if (!summary.months[month]) {
+                            summary.months[month] = { count: 0, beneficiaries: 0 };
+                        }
+                        summary.months[month].count++;
+                        summary.months[month].beneficiaries += item.beneficiariesCount || 0;
                     }
                 }
                 
                 // نوع البرنامج
                 const type = item.programType || 'حضوري';
                 summary.programTypes[type] = (summary.programTypes[type] || 0) + 1;
+                
+                // الفئات المستهدفة
+                const audiences = Array.isArray(item.targetAudience) ? item.targetAudience : [item.targetAudience || 'غير محدد'];
+                audiences.forEach(aud => {
+                    summary.targetAudiences[aud] = (summary.targetAudiences[aud] || 0) + 1;
+                });
             });
             
-            // تحويل لنص مقروء
-            let contextText = `إجمالي البرامج: ${summary.totalPrograms}\n`;
-            contextText += `إجمالي المستفيدين: ${summary.totalBeneficiaries}\n\n`;
+            // تحويل لنص مقروء للذكاء الاصطناعي
+            let contextText = `=== ملخص البيانات من قاعدة البيانات ===\n\n`;
+            contextText += `إجمالي البرامج والمناشط: ${summary.totalPrograms}\n`;
+            contextText += `إجمالي المستفيدين: ${summary.totalBeneficiaries}\n`;
+            contextText += `متوسط المستفيدين لكل نشاط: ${Math.round(summary.totalBeneficiaries / summary.totalPrograms)}\n\n`;
             
-            contextText += `التصنيفات:\n`;
-            Object.entries(summary.classifications).forEach(([k, v]) => {
-                contextText += `- ${k}: ${v} برنامج\n`;
-            });
-            
-            contextText += `\nالمنفذون:\n`;
-            Object.entries(summary.executors)
+            contextText += `=== التصنيفات ===\n`;
+            Object.entries(summary.classifications)
                 .sort((a, b) => b[1].count - a[1].count)
-                .slice(0, 10)
-                .forEach(([name, data]) => {
-                    contextText += `- ${name}: ${data.count} برنامج، ${data.beneficiaries} مستفيد\n`;
+                .forEach(([cls, data]) => {
+                    contextText += `• ${cls}: ${data.count} نشاط، ${data.beneficiaries} مستفيد\n`;
                 });
             
-            contextText += `\nأنواع البرامج:\n`;
-            Object.entries(summary.programTypes).forEach(([k, v]) => {
-                contextText += `- ${k}: ${v} برنامج\n`;
+            contextText += `\n=== المنفذون (الدعاة) ===\n`;
+            Object.entries(summary.executors)
+                .sort((a, b) => b[1].count - a[1].count)
+                .forEach(([name, data]) => {
+                    contextText += `• ${name}: ${data.count} نشاط، ${data.beneficiaries} مستفيد\n`;
+                });
+            
+            contextText += `\n=== الإحصائيات حسب الشهر ===\n`;
+            Object.entries(summary.months).forEach(([month, data]) => {
+                contextText += `• شهر ${month}: ${data.count} نشاط، ${data.beneficiaries} مستفيد\n`;
             });
             
-            contextText += `\nتفاصيل البرامج:\n`;
-            allData.slice(0, 30).forEach((item, i) => {
-                contextText += `${i + 1}. ${item.programName} | ${item.executorName} | ${item.classification} | ${item.executionDate} | ${item.beneficiariesCount} مستفيد\n`;
+            contextText += `\n=== أنواع البرامج ===\n`;
+            Object.entries(summary.programTypes).forEach(([type, count]) => {
+                contextText += `• ${type}: ${count} نشاط\n`;
+            });
+            
+            contextText += `\n=== فئات البرامج ===\n`;
+            Object.entries(summary.programCategories)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([cat, count]) => {
+                    contextText += `• ${cat}: ${count} نشاط\n`;
+                });
+            
+            contextText += `\n=== الفئات المستهدفة ===\n`;
+            Object.entries(summary.targetAudiences).forEach(([aud, count]) => {
+                contextText += `• ${aud}: ${count} نشاط\n`;
+            });
+            
+            contextText += `\n=== تفاصيل جميع المناشط ===\n`;
+            allData.forEach((item, i) => {
+                contextText += `${i + 1}. "${item.programName}" | المنفذ: ${item.executorName} | التصنيف: ${item.classification} | التاريخ: ${item.executionDate} | المستفيدين: ${item.beneficiariesCount} | النوع: ${item.programType || 'حضوري'}\n`;
             });
             
             return contextText;
