@@ -43,37 +43,16 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
 
-    <!-- ==================== البيانات ==================== -->
+    <!-- ==================== الإعدادات والبيانات ==================== -->
     <script>
-        // البيانات مستخرجة من ملف PDF المناشط
-        const activities = [
-            { date: '2026/01/03', beneficiaries: 20, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري', executor: 'محمد حسين القرني', category: 'الدروس العلمية' },
-            { date: '2026/01/04', beneficiaries: 25, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الدروس العلمية' },
-            { date: '2026/01/06', beneficiaries: 50, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'د.نايف بن علي الزهراني', category: 'المحاضرات' },
-            { date: '2026/01/06', beneficiaries: 35, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'محمد بن حامد الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 29, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'عبدالرحمن بن علي العمري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 23, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'ابراهيم بن علي الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 33, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن محمد العمري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 41, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن أحمد الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 63, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'نايف بن علي الزهراني', category: 'المحاضرات' },
-            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'نايف بن علي الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 57, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'إبراهيم علي الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 41, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'علي بن أحمد الغامدي', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 48, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'عبدالرحمن علي العمري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 37, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن محمد العمري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 44, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'محمد بن حامد الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن أحمد الزهراني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/07', beneficiaries: 28, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'حامد محمد الحذيفي', category: 'الدروس العلمية' },
-            { date: '2026/01/09', beneficiaries: 19, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'عبدالله حسن القرني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/09', beneficiaries: 48, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'عبدالله حسن القرني', category: 'الكلمات الدعوية' },
-            { date: '2026/01/13', beneficiaries: 45, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد', executor: 'جمعية بصائر العرضيات', category: 'المحاضرات' },
-            { date: '2026/01/10', beneficiaries: 64, classification: 'التوحيد والعقيدة', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'الكلمات الدعوية' },
-            { date: '2026/01/10', beneficiaries: 84, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'المحاضرات' },
-            { date: '2026/01/10', beneficiaries: 43, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'الكلمات الدعوية' },
-            { date: '2026/01/09', beneficiaries: 31, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/16', beneficiaries: 62, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الكلمات الدعوية' },
-            { date: '2026/01/20', beneficiaries: 50, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد', executor: 'جمعية بصائر العرضيات', category: 'المحاضرات' },
-        ];
+        // رابط جلب البيانات من n8n
+        const DATA_ENDPOINT = 'https://n8n.smoo1.com/webhook/manashet-data';
+        
+        // فترة التحديث التلقائي (30 ثانية)
+        const REFRESH_INTERVAL = 30000;
+        
+        // البيانات (ستُملأ من n8n)
+        let activities = [];
         
         // اختصارات التصنيفات
         const shortNames = {
@@ -99,9 +78,15 @@
                 <h1 class="text-2xl font-bold text-primary dark:text-purple-400">التقارير</h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400">تحليل شامل لبيانات المناشط</p>
             </div>
-            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark shadow flex items-center justify-center">
-                <span class="material-icons-round text-slate-600 dark:text-slate-300">dark_mode</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <!-- مؤشر التحديث -->
+                <div id="refresh-indicator" class="hidden">
+                    <span class="material-icons-round text-primary animate-spin">sync</span>
+                </div>
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark shadow flex items-center justify-center">
+                    <span class="material-icons-round text-slate-600 dark:text-slate-300">dark_mode</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -220,12 +205,7 @@
         // ========== الوضع الداكن ==========
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            setTimeout(() => {
-                createPieChart();
-                updateLineChart();
-                updateBarChart();
-                updateAdvancedChart();
-            }, 100);
+            setTimeout(updateAllCharts, 100);
         }
 
         function isDarkMode() {
@@ -240,6 +220,8 @@
 
         // ========== حساب KPIs ==========
         function updateKPIs() {
+            if (activities.length === 0) return;
+            
             const total = activities.reduce((sum, a) => sum + a.beneficiaries, 0);
             const count = activities.length;
             const executors = [...new Set(activities.map(a => a.executor))].length;
@@ -251,6 +233,8 @@
 
         // ========== المخطط الدائري (ثابت) ==========
         function createPieChart() {
+            if (activities.length === 0) return;
+            
             const colors = getChartColors();
             
             const classData = {};
@@ -316,6 +300,8 @@
 
         // ========== مخطط الخط (مع فلتر) ==========
         function updateLineChart() {
+            if (activities.length === 0) return;
+            
             const filter = document.getElementById('lineChartFilter').value;
             const colors = getChartColors();
             let chartData = {};
@@ -386,6 +372,8 @@
 
         // ========== مخطط الأعمدة (مع فلتر) ==========
         function updateBarChart() {
+            if (activities.length === 0) return;
+            
             const filter = document.getElementById('barChartFilter').value;
             const colors = getChartColors();
             let chartData = {};
@@ -447,6 +435,8 @@
 
         // ========== المخطط المتقدم (مع فلتر) ==========
         function updateAdvancedChart() {
+            if (activities.length === 0) return;
+            
             const filter = document.getElementById('advancedFilter').value;
             const colors = getChartColors();
             let options = {};
@@ -535,13 +525,76 @@
             advancedChart.render();
         }
 
-        // ========== التهيئة ==========
-        function init() {
+        // ========== جلب البيانات من n8n ==========
+        async function loadData() {
+            // إظهار مؤشر التحديث
+            const indicator = document.getElementById('refresh-indicator');
+            indicator.classList.remove('hidden');
+            
+            try {
+                const response = await fetch(DATA_ENDPOINT);
+                if (!response.ok) throw new Error('فشل في جلب البيانات');
+                
+                const data = await response.json();
+                
+                // تحويل البيانات للصيغة المطلوبة
+                if (Array.isArray(data)) {
+                    activities = data.map(item => ({
+                        date: item.executionDate || '',
+                        beneficiaries: item.beneficiariesCount || 0,
+                        classification: item.classification || '',
+                        audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
+                        type: item.programType || 'حضوري',
+                        executor: item.executorName || '',
+                        category: item.programCategory || ''
+                    }));
+                } else if (data.data && Array.isArray(data.data)) {
+                    activities = data.data.map(item => ({
+                        date: item.executionDate || '',
+                        beneficiaries: item.beneficiariesCount || 0,
+                        classification: item.classification || '',
+                        audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
+                        type: item.programType || 'حضوري',
+                        executor: item.executorName || '',
+                        category: item.programCategory || ''
+                    }));
+                }
+                
+                // تحديث جميع المخططات
+                updateAllCharts();
+                
+            } catch (error) {
+                console.error('خطأ في جلب البيانات:', error);
+                // عرض رسالة خطأ للمستخدم
+                document.getElementById('kpi-beneficiaries').textContent = '!';
+                document.getElementById('kpi-activities').textContent = '!';
+                document.getElementById('kpi-executors').textContent = '!';
+            } finally {
+                // إخفاء مؤشر التحديث
+                indicator.classList.add('hidden');
+            }
+        }
+        
+        // ========== تحديث جميع المخططات ==========
+        function updateAllCharts() {
+            if (activities.length === 0) return;
+            
             updateKPIs();
             createPieChart();
             updateLineChart();
             updateBarChart();
             updateAdvancedChart();
+        }
+
+        // ========== التحديث التلقائي ==========
+        function startAutoRefresh() {
+            setInterval(loadData, REFRESH_INTERVAL);
+        }
+
+        // ========== التهيئة ==========
+        function init() {
+            loadData();
+            startAutoRefresh();
         }
 
         document.addEventListener('DOMContentLoaded', init);
