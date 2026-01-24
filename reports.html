@@ -38,6 +38,7 @@
         body { font-family: 'Noto Sans Arabic', sans-serif; }
         ::-webkit-scrollbar { width: 0; background: transparent; }
         .ios-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        select { background-image: none; }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
@@ -46,109 +47,151 @@
     <script>
         // البيانات مستخرجة من ملف PDF المناشط
         const activities = [
-            { date: '2026/01/03', beneficiaries: 20, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري' },
-            { date: '2026/01/04', beneficiaries: 25, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 50, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 35, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 29, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 23, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 33, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 41, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 63, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 57, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 41, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 48, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 37, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 44, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/07', beneficiaries: 28, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري' },
-            { date: '2026/01/09', beneficiaries: 19, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/09', beneficiaries: 48, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/13', beneficiaries: 45, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد' },
-            { date: '2026/01/10', beneficiaries: 64, classification: 'التوحيد والعقيدة', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/10', beneficiaries: 84, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/10', beneficiaries: 43, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/09', beneficiaries: 31, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/16', beneficiaries: 62, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري' },
-            { date: '2026/01/20', beneficiaries: 50, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد' },
+            { date: '2026/01/03', beneficiaries: 20, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري', executor: 'محمد حسين القرني', category: 'الدروس العلمية' },
+            { date: '2026/01/04', beneficiaries: 25, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, نساء', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الدروس العلمية' },
+            { date: '2026/01/06', beneficiaries: 50, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'د.نايف بن علي الزهراني', category: 'المحاضرات' },
+            { date: '2026/01/06', beneficiaries: 35, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'محمد بن حامد الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 29, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'عبدالرحمن بن علي العمري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 23, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'ابراهيم بن علي الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 33, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن محمد العمري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 41, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن أحمد الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 63, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'نايف بن علي الزهراني', category: 'المحاضرات' },
+            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'نايف بن علي الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 57, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'إبراهيم علي الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 41, classification: 'الشريعة والفقه والعبادات', audience: 'رجال', type: 'حضوري', executor: 'علي بن أحمد الغامدي', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 48, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'عبدالرحمن علي العمري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 37, classification: 'الأمن الفكري والفكر المعتدل', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن محمد العمري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 44, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'محمد بن حامد الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/06', beneficiaries: 38, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال', type: 'حضوري', executor: 'عبدالعزيز بن أحمد الزهراني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/07', beneficiaries: 28, classification: 'التوحيد والعقيدة', audience: 'رجال', type: 'حضوري', executor: 'حامد محمد الحذيفي', category: 'الدروس العلمية' },
+            { date: '2026/01/09', beneficiaries: 19, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'عبدالله حسن القرني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/09', beneficiaries: 48, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'عبدالله حسن القرني', category: 'الكلمات الدعوية' },
+            { date: '2026/01/13', beneficiaries: 45, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد', executor: 'جمعية بصائر العرضيات', category: 'المحاضرات' },
+            { date: '2026/01/10', beneficiaries: 64, classification: 'التوحيد والعقيدة', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'الكلمات الدعوية' },
+            { date: '2026/01/10', beneficiaries: 84, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'المحاضرات' },
+            { date: '2026/01/10', beneficiaries: 43, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'علي عبدالعزيز الشبل', category: 'الكلمات الدعوية' },
+            { date: '2026/01/09', beneficiaries: 31, classification: 'الشريعة والفقه والعبادات', audience: 'رجال, شباب', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/16', beneficiaries: 62, classification: 'الأخلاق والسلوك والأداب', audience: 'رجال, شباب', type: 'حضوري', executor: 'معيلي عبدالله المنتشري', category: 'الكلمات الدعوية' },
+            { date: '2026/01/20', beneficiaries: 50, classification: 'التوحيد والعقيدة', audience: 'نساء', type: 'عن بعد', executor: 'جمعية بصائر العرضيات', category: 'المحاضرات' },
         ];
+        
+        // اختصارات التصنيفات
+        const shortNames = {
+            'الشريعة والفقه والعبادات': 'الشريعة',
+            'التوحيد والعقيدة': 'التوحيد',
+            'الأخلاق والسلوك والأداب': 'الأخلاق',
+            'الأمن الفكري والفكر المعتدل': 'الأمن الفكري'
+        };
+        
+        // ألوان التصنيفات
+        const classColors = {
+            'الشريعة والفقه والعبادات': '#6B4E96',
+            'التوحيد والعقيدة': '#3B82F6',
+            'الأخلاق والسلوك والأداب': '#10B981',
+            'الأمن الفكري والفكر المعتدل': '#F59E0B'
+        };
     </script>
 
     <!-- ==================== الهيدر ==================== -->
     <header class="px-5 pt-14 pb-4 sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 ios-blur">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center">
             <div>
                 <h1 class="text-2xl font-bold text-primary dark:text-purple-400">التقارير</h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400">تحليل بيانات المناشط</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">تحليل شامل لبيانات المناشط</p>
             </div>
             <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark shadow flex items-center justify-center">
                 <span class="material-icons-round text-slate-600 dark:text-slate-300">dark_mode</span>
             </button>
-        </div>
-        
-        <!-- فلتر الفئة المستهدفة -->
-        <div class="relative">
-            <select id="audienceFilter" onchange="applyFilter()" class="w-full px-4 py-3 bg-card-light dark:bg-card-dark rounded-xl text-sm appearance-none cursor-pointer border-none shadow-sm focus:ring-2 focus:ring-primary dark:text-white">
-                <option value="all">جميع الفئات</option>
-                <option value="رجال">رجال</option>
-                <option value="نساء">نساء</option>
-                <option value="شباب">شباب</option>
-            </select>
-            <span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
         </div>
     </header>
 
     <!-- ==================== المحتوى الرئيسي ==================== -->
     <main class="px-5 space-y-6">
         
-        <!-- KPI Cards -->
+        <!-- ========== KPI Cards ========== -->
         <div class="grid grid-cols-3 gap-3">
-            <!-- إجمالي المستفيدين -->
             <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm text-center">
                 <span class="material-icons-round text-primary dark:text-purple-400 text-2xl mb-1 block">groups</span>
                 <span id="kpi-beneficiaries" class="text-primary dark:text-purple-400 font-bold text-xl block">0</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400">إجمالي المستفيدين</span>
             </div>
-            
-            <!-- عدد المناشط -->
             <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm text-center">
                 <span class="material-icons-round text-primary dark:text-purple-400 text-2xl mb-1 block">event</span>
                 <span id="kpi-activities" class="text-primary dark:text-purple-400 font-bold text-xl block">0</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400">عدد المناشط</span>
             </div>
-            
-            <!-- أكثر تصنيف -->
             <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm text-center">
-                <span class="material-icons-round text-primary dark:text-purple-400 text-2xl mb-1 block">category</span>
-                <span id="kpi-top-class" class="text-primary dark:text-purple-400 font-bold text-sm block leading-tight">-</span>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400">الأكثر تكراراً</span>
+                <span class="material-icons-round text-primary dark:text-purple-400 text-2xl mb-1 block">person</span>
+                <span id="kpi-executors" class="text-primary dark:text-purple-400 font-bold text-xl block">0</span>
+                <span class="text-[10px] text-slate-500 dark:text-slate-400">عدد المنفذين</span>
             </div>
         </div>
 
-        <!-- رسم نمو الحضور (Line Chart) -->
+        <!-- ========== المخطط الدائري - التصنيفات (ثابت) ========== -->
         <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm">
             <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
-                <span class="material-icons-round text-primary text-lg">trending_up</span>
-                نمو الحضور حسب التاريخ
+                <span class="material-icons-round text-primary text-lg">pie_chart</span>
+                توزيع التصنيفات
+                <span class="text-xs text-slate-400 font-normal">(نسبة كل تصنيف من المجموع)</span>
             </h3>
+            <div id="pieChart"></div>
+        </div>
+
+        <!-- ========== مخطط الخط - مع فلتر ========== -->
+        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-sm flex items-center gap-2">
+                    <span class="material-icons-round text-primary text-lg">trending_up</span>
+                    تحليل الحضور
+                </h3>
+                <select id="lineChartFilter" onchange="updateLineChart()" class="text-xs bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 border-none focus:ring-2 focus:ring-primary">
+                    <option value="byDate">حسب التاريخ</option>
+                    <option value="byClassification">حسب التصنيف</option>
+                    <option value="byCategory">حسب فئة البرنامج</option>
+                    <option value="byType">حضوري vs عن بعد</option>
+                </select>
+            </div>
             <div id="lineChart"></div>
         </div>
 
-        <!-- رسم التصنيفات (Bar Chart) -->
+        <!-- ========== مخطط الأعمدة - مع فلتر ========== -->
         <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm">
-            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
-                <span class="material-icons-round text-primary text-lg">bar_chart</span>
-                المستفيدين حسب التصنيف
-            </h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-sm flex items-center gap-2">
+                    <span class="material-icons-round text-primary text-lg">bar_chart</span>
+                    مقارنات
+                </h3>
+                <select id="barChartFilter" onchange="updateBarChart()" class="text-xs bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 border-none focus:ring-2 focus:ring-primary">
+                    <option value="topExecutors">أكثر المنفذين نشاطاً</option>
+                    <option value="executorsBeneficiaries">المنفذين حسب المستفيدين</option>
+                    <option value="audienceComparison">مقارنة الفئات المستهدفة</option>
+                    <option value="categoryComparison">مقارنة فئات البرامج</option>
+                </select>
+            </div>
             <div id="barChart"></div>
+        </div>
+
+        <!-- ========== مخطط إضافي - المقارنة الزمنية ========== -->
+        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-semibold text-sm flex items-center gap-2">
+                    <span class="material-icons-round text-primary text-lg">compare_arrows</span>
+                    مقارنة متقدمة
+                </h3>
+                <select id="advancedFilter" onchange="updateAdvancedChart()" class="text-xs bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-2 border-none focus:ring-2 focus:ring-primary">
+                    <option value="classificationTrend">اتجاه التصنيفات عبر الوقت</option>
+                    <option value="weekdayAnalysis">تحليل أيام الأسبوع</option>
+                    <option value="cumulativeGrowth">النمو التراكمي</option>
+                </select>
+            </div>
+            <div id="advancedChart"></div>
         </div>
 
     </main>
 
     <!-- ==================== شريط التنقل ==================== -->
     <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-slate-200 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
-        <a href="index.html" class="flex flex-col items-center text-slate-400 dark:text-slate-500">
+        <a href="manashet-dashboard.html" class="flex flex-col items-center text-slate-400 dark:text-slate-500">
             <span class="material-icons-round">dashboard</span>
             <span class="text-[10px] font-medium mt-1">الرئيسية</span>
         </a>
@@ -169,154 +212,171 @@
     <!-- ==================== JavaScript ==================== -->
     <script>
         // ========== المتغيرات العامة ==========
-        let filteredData = [...activities];
+        let pieChart = null;
         let lineChart = null;
         let barChart = null;
+        let advancedChart = null;
 
         // ========== الوضع الداكن ==========
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            updateChartsTheme();
+            setTimeout(() => {
+                createPieChart();
+                updateLineChart();
+                updateBarChart();
+                updateAdvancedChart();
+            }, 100);
         }
 
         function isDarkMode() {
             return document.documentElement.classList.contains('dark');
         }
 
-        // ========== حساب الإحصائيات ==========
-        function calculateStats(data) {
-            // إجمالي المستفيدين
-            const totalBeneficiaries = data.reduce((sum, item) => sum + item.beneficiaries, 0);
-            
-            // عدد المناشط
-            const totalActivities = data.length;
-            
-            // أكثر تصنيف تكراراً
-            const classCount = {};
-            data.forEach(item => {
-                classCount[item.classification] = (classCount[item.classification] || 0) + 1;
-            });
-            
-            let topClassification = '-';
-            let maxCount = 0;
-            for (const [cls, count] of Object.entries(classCount)) {
-                if (count > maxCount) {
-                    maxCount = count;
-                    topClassification = cls;
-                }
-            }
-            
-            // اختصار اسم التصنيف للعرض
-            const shortNames = {
-                'الشريعة والفقه والعبادات': 'الشريعة',
-                'التوحيد والعقيدة': 'التوحيد',
-                'الأخلاق والسلوك والأداب': 'الأخلاق',
-                'الأمن الفكري والفكر المعتدل': 'الأمن الفكري'
-            };
-            
-            return {
-                totalBeneficiaries,
-                totalActivities,
-                topClassification: shortNames[topClassification] || topClassification
-            };
-        }
-
-        // ========== تحديث KPIs ==========
-        function updateKPIs(stats) {
-            document.getElementById('kpi-beneficiaries').textContent = stats.totalBeneficiaries.toLocaleString('ar-SA');
-            document.getElementById('kpi-activities').textContent = stats.totalActivities.toLocaleString('ar-SA');
-            document.getElementById('kpi-top-class').textContent = stats.topClassification;
-        }
-
-        // ========== تجهيز بيانات الرسوم ==========
-        function prepareLineChartData(data) {
-            // تجميع المستفيدين حسب التاريخ
-            const dateMap = {};
-            data.forEach(item => {
-                dateMap[item.date] = (dateMap[item.date] || 0) + item.beneficiaries;
-            });
-            
-            // ترتيب التواريخ
-            const sortedDates = Object.keys(dateMap).sort();
-            
-            return {
-                categories: sortedDates.map(d => d.split('/').slice(1).join('/')), // MM/DD فقط
-                series: sortedDates.map(d => dateMap[d])
-            };
-        }
-
-        function prepareBarChartData(data) {
-            // تجميع المستفيدين حسب التصنيف
-            const classMap = {};
-            data.forEach(item => {
-                classMap[item.classification] = (classMap[item.classification] || 0) + item.beneficiaries;
-            });
-            
-            // اختصار الأسماء
-            const shortNames = {
-                'الشريعة والفقه والعبادات': 'الشريعة',
-                'التوحيد والعقيدة': 'التوحيد',
-                'الأخلاق والسلوك والأداب': 'الأخلاق',
-                'الأمن الفكري والفكر المعتدل': 'الأمن الفكري'
-            };
-            
-            const categories = Object.keys(classMap).map(c => shortNames[c] || c);
-            const series = Object.values(classMap);
-            
-            return { categories, series };
-        }
-
-        // ========== إعدادات الرسوم ==========
         function getChartColors() {
             return isDarkMode() 
                 ? { text: '#94a3b8', grid: '#334155', bg: 'transparent' }
                 : { text: '#64748b', grid: '#e2e8f0', bg: 'transparent' };
         }
 
-        function createLineChart(data) {
+        // ========== حساب KPIs ==========
+        function updateKPIs() {
+            const total = activities.reduce((sum, a) => sum + a.beneficiaries, 0);
+            const count = activities.length;
+            const executors = [...new Set(activities.map(a => a.executor))].length;
+            
+            document.getElementById('kpi-beneficiaries').textContent = total.toLocaleString('ar-SA');
+            document.getElementById('kpi-activities').textContent = count.toLocaleString('ar-SA');
+            document.getElementById('kpi-executors').textContent = executors.toLocaleString('ar-SA');
+        }
+
+        // ========== المخطط الدائري (ثابت) ==========
+        function createPieChart() {
             const colors = getChartColors();
-            const chartData = prepareLineChartData(data);
+            
+            const classData = {};
+            activities.forEach(a => {
+                classData[a.classification] = (classData[a.classification] || 0) + a.beneficiaries;
+            });
+            
+            const labels = Object.keys(classData).map(c => shortNames[c] || c);
+            const series = Object.values(classData);
+            const chartColors = Object.keys(classData).map(c => classColors[c] || '#6B4E96');
             
             const options = {
-                series: [{
-                    name: 'المستفيدين',
-                    data: chartData.series
-                }],
+                series: series,
                 chart: {
-                    type: 'area',
-                    height: 200,
+                    type: 'donut',
+                    height: 280,
+                    fontFamily: 'Noto Sans Arabic, sans-serif',
+                    background: colors.bg
+                },
+                labels: labels,
+                colors: chartColors,
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '55%',
+                            labels: {
+                                show: true,
+                                name: { show: true, fontSize: '14px', color: colors.text },
+                                value: { 
+                                    show: true, 
+                                    fontSize: '18px', 
+                                    fontWeight: 'bold',
+                                    formatter: val => val + ' مستفيد'
+                                },
+                                total: {
+                                    show: true,
+                                    label: 'الإجمالي',
+                                    fontSize: '12px',
+                                    color: colors.text,
+                                    formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0) + ' مستفيد'
+                                }
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    fontSize: '11px',
+                    labels: { colors: colors.text }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: (val) => val.toFixed(1) + '%',
+                    style: { fontSize: '11px' }
+                },
+                tooltip: { y: { formatter: val => val + ' مستفيد' } }
+            };
+
+            if (pieChart) pieChart.destroy();
+            pieChart = new ApexCharts(document.getElementById('pieChart'), options);
+            pieChart.render();
+        }
+
+        // ========== مخطط الخط (مع فلتر) ==========
+        function updateLineChart() {
+            const filter = document.getElementById('lineChartFilter').value;
+            const colors = getChartColors();
+            let chartData = {};
+            let chartType = 'area';
+            
+            switch(filter) {
+                case 'byDate':
+                    activities.forEach(a => {
+                        const shortDate = a.date.split('/').slice(1).join('/');
+                        chartData[shortDate] = (chartData[shortDate] || 0) + a.beneficiaries;
+                    });
+                    break;
+                case 'byClassification':
+                    activities.forEach(a => {
+                        const name = shortNames[a.classification] || a.classification;
+                        chartData[name] = (chartData[name] || 0) + a.beneficiaries;
+                    });
+                    chartType = 'bar';
+                    break;
+                case 'byCategory':
+                    activities.forEach(a => {
+                        chartData[a.category] = (chartData[a.category] || 0) + a.beneficiaries;
+                    });
+                    chartType = 'bar';
+                    break;
+                case 'byType':
+                    activities.forEach(a => {
+                        chartData[a.type] = (chartData[a.type] || 0) + a.beneficiaries;
+                    });
+                    chartType = 'bar';
+                    break;
+            }
+            
+            const categories = Object.keys(chartData);
+            const series = Object.values(chartData);
+            
+            const options = {
+                series: [{ name: 'المستفيدين', data: series }],
+                chart: {
+                    type: chartType,
+                    height: 220,
                     fontFamily: 'Noto Sans Arabic, sans-serif',
                     toolbar: { show: false },
                     background: colors.bg
                 },
                 colors: ['#6B4E96'],
-                fill: {
+                fill: chartType === 'area' ? {
                     type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.4,
-                        opacityTo: 0.1
-                    }
-                },
-                stroke: { curve: 'smooth', width: 3 },
-                dataLabels: { enabled: false },
+                    gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 }
+                } : { opacity: 1 },
+                stroke: { curve: 'smooth', width: chartType === 'area' ? 3 : 0 },
+                plotOptions: chartType === 'bar' ? { bar: { borderRadius: 6, columnWidth: '60%' } } : {},
+                dataLabels: { enabled: chartType === 'bar', style: { fontSize: '10px' } },
                 xaxis: {
-                    categories: chartData.categories,
-                    labels: { style: { colors: colors.text, fontSize: '10px' } },
-                    axisBorder: { show: false },
-                    axisTicks: { show: false }
+                    categories: categories,
+                    labels: { style: { colors: colors.text, fontSize: '10px' }, rotate: -45 },
+                    axisBorder: { show: false }
                 },
-                yaxis: {
-                    labels: { style: { colors: colors.text, fontSize: '10px' } }
-                },
-                grid: {
-                    borderColor: colors.grid,
-                    strokeDashArray: 4
-                },
-                tooltip: {
-                    theme: isDarkMode() ? 'dark' : 'light',
-                    y: { formatter: val => val + ' مستفيد' }
-                }
+                yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                grid: { borderColor: colors.grid, strokeDashArray: 4 },
+                tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val + ' مستفيد' } }
             };
 
             if (lineChart) lineChart.destroy();
@@ -324,31 +384,48 @@
             lineChart.render();
         }
 
-        function createBarChart(data) {
+        // ========== مخطط الأعمدة (مع فلتر) ==========
+        function updateBarChart() {
+            const filter = document.getElementById('barChartFilter').value;
             const colors = getChartColors();
-            const chartData = prepareBarChartData(data);
+            let chartData = {};
+            
+            switch(filter) {
+                case 'topExecutors':
+                    activities.forEach(a => { chartData[a.executor] = (chartData[a.executor] || 0) + 1; });
+                    break;
+                case 'executorsBeneficiaries':
+                    activities.forEach(a => { chartData[a.executor] = (chartData[a.executor] || 0) + a.beneficiaries; });
+                    break;
+                case 'audienceComparison':
+                    activities.forEach(a => {
+                        a.audience.split(',').map(s => s.trim()).forEach(aud => {
+                            chartData[aud] = (chartData[aud] || 0) + a.beneficiaries;
+                        });
+                    });
+                    break;
+                case 'categoryComparison':
+                    activities.forEach(a => { chartData[a.category] = (chartData[a.category] || 0) + a.beneficiaries; });
+                    break;
+            }
+            
+            let sorted = Object.entries(chartData).sort((a, b) => b[1] - a[1]);
+            if (filter === 'topExecutors' || filter === 'executorsBeneficiaries') sorted = sorted.slice(0, 8);
+            
+            const categories = sorted.map(([k]) => k.length > 18 ? k.substring(0, 18) + '...' : k);
+            const series = sorted.map(([, v]) => v);
             
             const options = {
-                series: [{
-                    name: 'المستفيدين',
-                    data: chartData.series
-                }],
+                series: [{ name: filter.includes('Beneficiaries') || filter.includes('Comparison') ? 'المستفيدين' : 'المناشط', data: series }],
                 chart: {
                     type: 'bar',
-                    height: 250,
+                    height: 280,
                     fontFamily: 'Noto Sans Arabic, sans-serif',
                     toolbar: { show: false },
                     background: colors.bg
                 },
-                colors: ['#6B4E96', '#8B5CF6', '#A78BFA', '#C4B5FD'],
-                plotOptions: {
-                    bar: {
-                        borderRadius: 8,
-                        horizontal: true,
-                        distributed: true,
-                        barHeight: '70%'
-                    }
-                },
+                colors: ['#6B4E96', '#8B5CF6', '#A78BFA', '#C4B5FD', '#DDD6FE', '#EDE9FE', '#F5F3FF', '#FAF5FF'],
+                plotOptions: { bar: { borderRadius: 6, horizontal: true, distributed: true, barHeight: '70%' } },
                 dataLabels: {
                     enabled: true,
                     textAnchor: 'start',
@@ -356,25 +433,11 @@
                     style: { colors: ['#fff'], fontSize: '11px' },
                     offsetX: 5
                 },
-                xaxis: {
-                    categories: chartData.categories,
-                    labels: { style: { colors: colors.text, fontSize: '10px' } },
-                    axisBorder: { show: false }
-                },
-                yaxis: {
-                    labels: { style: { colors: colors.text, fontSize: '11px' } }
-                },
-                grid: {
-                    borderColor: colors.grid,
-                    strokeDashArray: 4,
-                    xaxis: { lines: { show: true } },
-                    yaxis: { lines: { show: false } }
-                },
+                xaxis: { categories: categories, labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                grid: { borderColor: colors.grid, strokeDashArray: 4, xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
                 legend: { show: false },
-                tooltip: {
-                    theme: isDarkMode() ? 'dark' : 'light',
-                    y: { formatter: val => val + ' مستفيد' }
-                }
+                tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
             };
 
             if (barChart) barChart.destroy();
@@ -382,38 +445,105 @@
             barChart.render();
         }
 
-        // ========== تحديث ألوان الرسوم عند تغيير الوضع ==========
-        function updateChartsTheme() {
-            createLineChart(filteredData);
-            createBarChart(filteredData);
-        }
-
-        // ========== الفلترة ==========
-        function applyFilter() {
-            const filterValue = document.getElementById('audienceFilter').value;
+        // ========== المخطط المتقدم (مع فلتر) ==========
+        function updateAdvancedChart() {
+            const filter = document.getElementById('advancedFilter').value;
+            const colors = getChartColors();
+            let options = {};
             
-            if (filterValue === 'all') {
-                filteredData = [...activities];
-            } else {
-                filteredData = activities.filter(item => item.audience.includes(filterValue));
+            switch(filter) {
+                case 'classificationTrend':
+                    const dateClassData = {};
+                    const allDates = [...new Set(activities.map(a => a.date))].sort();
+                    const allClasses = [...new Set(activities.map(a => a.classification))];
+                    
+                    allClasses.forEach(cls => {
+                        dateClassData[cls] = allDates.map(date => 
+                            activities.filter(a => a.date === date && a.classification === cls)
+                                .reduce((sum, a) => sum + a.beneficiaries, 0)
+                        );
+                    });
+                    
+                    options = {
+                        series: allClasses.map(cls => ({ name: shortNames[cls] || cls, data: dateClassData[cls] })),
+                        chart: { type: 'line', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
+                        colors: Object.values(classColors),
+                        stroke: { curve: 'smooth', width: 2 },
+                        xaxis: { categories: allDates.map(d => d.split('/').slice(1).join('/')), labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 } },
+                        yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
+                        legend: { position: 'top', fontSize: '10px', labels: { colors: colors.text } },
+                        tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
+                    };
+                    break;
+                    
+                case 'weekdayAnalysis':
+                    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                    const weekdayData = { count: Array(7).fill(0), beneficiaries: Array(7).fill(0) };
+                    
+                    activities.forEach(a => {
+                        const date = new Date(a.date.replace(/\//g, '-'));
+                        const day = date.getDay();
+                        weekdayData.count[day]++;
+                        weekdayData.beneficiaries[day] += a.beneficiaries;
+                    });
+                    
+                    options = {
+                        series: [
+                            { name: 'عدد المناشط', data: weekdayData.count },
+                            { name: 'المستفيدين', data: weekdayData.beneficiaries }
+                        ],
+                        chart: { type: 'bar', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
+                        colors: ['#6B4E96', '#10B981'],
+                        plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
+                        xaxis: { categories: weekdays, labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                        yaxis: [
+                            { title: { text: 'المناشط', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } },
+                            { opposite: true, title: { text: 'المستفيدين', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } }
+                        ],
+                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
+                        legend: { position: 'top', fontSize: '10px', labels: { colors: colors.text } },
+                        tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
+                    };
+                    break;
+                    
+                case 'cumulativeGrowth':
+                    const sortedAct = [...activities].sort((a, b) => new Date(a.date) - new Date(b.date));
+                    let cumulative = 0;
+                    const cumulativeData = sortedAct.map(a => {
+                        cumulative += a.beneficiaries;
+                        return { x: a.date.split('/').slice(1).join('/'), y: cumulative };
+                    });
+                    
+                    options = {
+                        series: [{ name: 'النمو التراكمي', data: cumulativeData }],
+                        chart: { type: 'area', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
+                        colors: ['#6B4E96'],
+                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 } },
+                        stroke: { curve: 'smooth', width: 3 },
+                        dataLabels: { enabled: false },
+                        xaxis: { type: 'category', labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 } },
+                        yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' }, formatter: val => val.toLocaleString('ar-SA') } },
+                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
+                        tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val + ' مستفيد (تراكمي)' } }
+                    };
+                    break;
             }
-            
-            // تحديث كل شيء
-            const stats = calculateStats(filteredData);
-            updateKPIs(stats);
-            createLineChart(filteredData);
-            createBarChart(filteredData);
+
+            if (advancedChart) advancedChart.destroy();
+            advancedChart = new ApexCharts(document.getElementById('advancedChart'), options);
+            advancedChart.render();
         }
 
         // ========== التهيئة ==========
         function init() {
-            const stats = calculateStats(activities);
-            updateKPIs(stats);
-            createLineChart(activities);
-            createBarChart(activities);
+            updateKPIs();
+            createPieChart();
+            updateLineChart();
+            updateBarChart();
+            updateAdvancedChart();
         }
 
-        // تشغيل عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', init);
     </script>
 
