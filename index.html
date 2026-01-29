@@ -12,11 +12,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#6B4E96",
-                        "background-light": "#F8F9FA",
-                        "background-dark": "#111827",
+                        primary: "#3D7A5A",
+                        "primary-light": "#BDD5C4",
+                        accent: "#FF8B8B",
+                        "background-light": "#F4F4F4",
+                        "background-dark": "#1A1A1A",
                         "card-light": "#FFFFFF",
-                        "card-dark": "#1F2937",
+                        "card-dark": "#2A2A2A",
                     },
                     fontFamily: {
                         display: ["Noto Sans Arabic", "sans-serif"],
@@ -46,12 +48,12 @@
             min-height: max(884px, 100dvh);
         }
         .skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(90deg, #e8e8e8 25%, #d8d8d8 50%, #e8e8e8 75%);
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
         }
         .dark .skeleton {
-            background: linear-gradient(90deg, #374151 25%, #4B5563 50%, #374151 75%);
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
             background-size: 200% 100%;
         }
         @keyframes shimmer {
@@ -62,7 +64,7 @@
             transition: all 0.2s ease;
         }
         .filter-chip.active {
-            background-color: #6B4E96;
+            background-color: #3D7A5A;
             color: white;
         }
         .ai-modal {
@@ -81,6 +83,16 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-8px); }
         }
+        /* Gradient backgrounds */
+        .gradient-card {
+            background: linear-gradient(135deg, #BDD5C4 0%, #ffffff 100%);
+        }
+        .dark .gradient-card {
+            background: linear-gradient(135deg, #2A3A30 0%, #2A2A2A 100%);
+        }
+        .accent-gradient {
+            background: linear-gradient(135deg, #FF8B8B 0%, #FFB4B4 100%);
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
@@ -89,7 +101,7 @@
     <header class="px-5 pb-4 sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 ios-blur">
         <div class="flex justify-between items-center mb-6 pt-2">
             <div>
-                <h1 class="text-2xl font-bold text-primary dark:text-purple-400">الإحصائيات العامة</h1>
+                <h1 class="text-2xl font-bold text-primary dark:text-primary-light">الإحصائيات العامة</h1>
                 <p class="text-sm text-slate-500 dark:text-slate-400">نظرة شاملة على البرامج والفعاليات</p>
             </div>
             <div class="flex items-center gap-2">
@@ -97,24 +109,24 @@
                 <div id="refresh-indicator" class="hidden">
                     <span class="material-icons-round text-primary animate-spin text-xl">sync</span>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden">
-                    <span class="material-icons-round text-slate-500">account_circle</span>
+                <div class="w-10 h-10 rounded-full bg-primary-light dark:bg-slate-700 flex items-center justify-center overflow-hidden">
+                    <span class="material-icons-round text-primary dark:text-primary-light">account_circle</span>
                 </div>
             </div>
         </div>
         
         <!-- الإحصائيات العامة -->
         <div class="grid grid-cols-3 gap-3 mb-6">
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
-                <span id="total-beneficiaries" class="text-primary dark:text-purple-400 font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
+                <span id="total-beneficiaries" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">إجمالي المستفيدين</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
-                <span id="total-programs" class="text-primary dark:text-purple-400 font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
+                <span id="total-programs" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">عدد البرامج</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 text-center">
-                <span id="avg-attendance" class="text-primary dark:text-purple-400 font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
+                <span id="avg-attendance" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">متوسط الحضور</span>
             </div>
         </div>
@@ -123,7 +135,7 @@
         <div class="flex gap-2 mb-4">
             <div class="relative flex-1">
                 <span class="material-icons-round absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                <input id="search-input" class="w-full pr-10 pl-4 py-3 bg-card-light dark:bg-card-dark border-none rounded-xl text-sm focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="البحث عن برنامج أو منفذ..." type="text"/>
+                <input id="search-input" class="w-full pr-10 pl-4 py-3 bg-card-light dark:bg-card-dark border border-primary-light/20 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-primary shadow-sm dark:text-white" placeholder="البحث عن برنامج أو منفذ..." type="text"/>
             </div>
             <button id="filter-btn" class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-primary/20">
                 <span class="material-icons-round">tune</span>
@@ -132,18 +144,18 @@
         
         <!-- شرائح الفلترة -->
         <div id="filter-chips" class="flex gap-2 overflow-x-auto pb-2 hidden">
-            <button class="filter-chip active px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="all">الكل</button>
-            <button class="filter-chip px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الشريعة والفقه والعبادات">الشريعة والفقه</button>
-            <button class="filter-chip px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="التوحيد والعقيدة">التوحيد والعقيدة</button>
-            <button class="filter-chip px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الأخلاق والسلوك والأداب">الأخلاق والسلوك</button>
-            <button class="filter-chip px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الأمن الفكري والفكر المعتدل">الأمن الفكري</button>
+            <button class="filter-chip active px-4 py-2 bg-primary-light/50 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="all">الكل</button>
+            <button class="filter-chip px-4 py-2 bg-primary-light/50 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الشريعة والفقه والعبادات">الشريعة والفقه</button>
+            <button class="filter-chip px-4 py-2 bg-primary-light/50 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="التوحيد والعقيدة">التوحيد والعقيدة</button>
+            <button class="filter-chip px-4 py-2 bg-primary-light/50 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الأخلاق والسلوك والأداب">الأخلاق والسلوك</button>
+            <button class="filter-chip px-4 py-2 bg-primary-light/50 dark:bg-slate-800 rounded-full text-xs font-medium whitespace-nowrap" data-filter="الأمن الفكري والفكر المعتدل">الأمن الفكري</button>
         </div>
     </header>
     
     <main class="px-5 pb-24">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold">أحدث البرامج</h2>
-            <span id="programs-count" class="text-primary dark:text-purple-400 text-sm font-medium">-- برنامج</span>
+            <span id="programs-count" class="text-primary dark:text-primary-light text-sm font-medium">-- برنامج</span>
         </div>
         
         <!-- قائمة البرامج -->
@@ -153,17 +165,17 @@
         
         <!-- حالة التحميل -->
         <div id="loading-state" class="space-y-4">
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/20 dark:border-slate-700">
                 <div class="skeleton h-6 w-24 rounded-full mb-3"></div>
                 <div class="skeleton h-5 w-3/4 rounded mb-3"></div>
                 <div class="skeleton h-4 w-1/2 rounded"></div>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/20 dark:border-slate-700">
                 <div class="skeleton h-6 w-24 rounded-full mb-3"></div>
                 <div class="skeleton h-5 w-3/4 rounded mb-3"></div>
                 <div class="skeleton h-4 w-1/2 rounded"></div>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/20 dark:border-slate-700">
                 <div class="skeleton h-6 w-24 rounded-full mb-3"></div>
                 <div class="skeleton h-5 w-3/4 rounded mb-3"></div>
                 <div class="skeleton h-4 w-1/2 rounded"></div>
@@ -195,7 +207,7 @@
         <div class="bg-card-light dark:bg-card-dark w-full max-w-lg rounded-t-3xl p-5 max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <div class="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center">
                         <span class="material-icons-round text-primary">auto_awesome</span>
                     </div>
                     <div>
@@ -211,10 +223,10 @@
             <!-- الرسائل -->
             <div id="ai-messages" class="ai-messages flex-1 space-y-4 mb-4 overflow-y-auto">
                 <div class="flex gap-3">
-                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div class="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center flex-shrink-0">
                         <span class="material-icons-round text-primary text-sm">auto_awesome</span>
                     </div>
-                    <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3 max-w-[85%]">
+                    <div class="bg-primary-light/30 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3 max-w-[85%]">
                         <p class="text-sm">مرحباً! أنا المساعد الذكي للمناشط. يمكنني تحليل البيانات والإجابة عن استفساراتك. جرّب أن تسألني:</p>
                         <ul class="text-xs text-slate-600 dark:text-slate-400 mt-2 space-y-1">
                             <li>• كم إجمالي المستفيدين هذا الشهر؟</li>
@@ -228,7 +240,7 @@
             
             <!-- حقل الإدخال -->
             <div class="flex gap-2">
-                <input id="ai-input" type="text" placeholder="اكتب سؤالك هنا..." class="flex-1 px-4 py-3 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"/>
+                <input id="ai-input" type="text" placeholder="اكتب سؤالك هنا..." class="flex-1 px-4 py-3 bg-primary-light/20 dark:bg-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"/>
                 <button id="ai-send" class="w-12 h-12 bg-primary text-white rounded-xl flex items-center justify-center">
                     <span class="material-icons-round">send</span>
                 </button>
@@ -237,8 +249,8 @@
     </div>
     
     <!-- شريط التنقل -->
-    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-slate-200 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
-        <a href="index.html" class="flex flex-col items-center text-primary">
+    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-primary-light/30 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
+        <a href="manashet-dashboard.html" class="flex flex-col items-center text-primary">
             <span class="material-icons-round">dashboard</span>
             <span class="text-[10px] font-medium mt-1">الرئيسية</span>
         </a>
@@ -257,7 +269,7 @@
     </nav>
     
     <!-- زر الوضع الداكن -->
-    <button class="fixed top-4 left-4 w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center z-50 border border-slate-200 dark:border-slate-700" onclick="document.documentElement.classList.toggle('dark')">
+    <button class="fixed top-4 left-4 w-10 h-10 rounded-full bg-white dark:bg-slate-800 shadow-md flex items-center justify-center z-50 border border-primary-light dark:border-slate-700" onclick="document.documentElement.classList.toggle('dark')">
         <span class="material-icons-round text-slate-700 dark:text-slate-200 text-xl">dark_mode</span>
     </button>
 
@@ -271,13 +283,13 @@
             // فترة التحديث التلقائي (بالمللي ثانية) - 30 ثانية
             REFRESH_INTERVAL: 30000,
             
-            // ألوان التصنيفات
+            // ألوان التصنيفات - محدثة بالهوية الجديدة
             CLASSIFICATION_COLORS: {
-                'الشريعة والفقه والعبادات': { bg: 'bg-purple-50 dark:bg-purple-900/30', text: 'text-primary dark:text-purple-300' },
-                'التوحيد والعقيدة': { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-300' },
-                'الأخلاق والسلوك والأداب': { bg: 'bg-green-50 dark:bg-green-900/30', text: 'text-green-600 dark:text-green-300' },
-                'الأمن الفكري والفكر المعتدل': { bg: 'bg-amber-50 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-300' },
-                'default': { bg: 'bg-red-50 dark:bg-red-900/30', text: 'text-red-600 dark:text-red-300' }
+                'الشريعة والفقه والعبادات': { bg: 'bg-[#BDD5C4]/30 dark:bg-[#3D7A5A]/30', text: 'text-[#3D7A5A] dark:text-[#BDD5C4]' },
+                'التوحيد والعقيدة': { bg: 'bg-[#FF8B8B]/20 dark:bg-[#FF8B8B]/20', text: 'text-[#c45c5c] dark:text-[#FF8B8B]' },
+                'الأخلاق والسلوك والأداب': { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-700 dark:text-slate-300' },
+                'الأمن الفكري والفكر المعتدل': { bg: 'bg-amber-50 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300' },
+                'default': { bg: 'bg-[#BDD5C4]/20 dark:bg-[#3D7A5A]/20', text: 'text-[#3D7A5A] dark:text-[#BDD5C4]' }
             }
         };
 
@@ -455,13 +467,13 @@
                 : (item.targetAudience || 'غير محدد');
             
             return `
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 transition-all active:scale-[0.98]">
+                <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-[#BDD5C4]/30 dark:border-slate-700 transition-all active:scale-[0.98]">
                     <div class="flex justify-between items-start mb-3">
                         <span class="px-3 py-1 ${colors.bg} ${colors.text} rounded-full text-[10px] font-bold">${shortClassification}</span>
                         <div class="flex items-center gap-1 text-slate-400">
                             ${isRemote ? `
-                                <span class="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-                                <span class="text-xs font-bold text-red-500">عن بعد</span>
+                                <span class="flex h-2 w-2 rounded-full bg-[#FF8B8B] animate-pulse"></span>
+                                <span class="text-xs font-bold text-[#FF8B8B]">عن بعد</span>
                             ` : `
                                 <span class="material-icons-round text-sm">groups</span>
                                 <span class="text-xs font-semibold">${item.beneficiariesCount || 0} مستفيد</span>
@@ -469,9 +481,9 @@
                         </div>
                     </div>
                     <h3 class="font-bold text-md mb-1 leading-tight">${item.programName || 'بدون عنوان'}</h3>
-                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-50 dark:border-slate-800">
+                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#BDD5C4]/20 dark:border-slate-800">
                         <div class="flex items-center gap-2">
-                            <span class="material-icons-round text-slate-400 text-sm">person</span>
+                            <span class="material-icons-round text-[#3D7A5A] dark:text-[#BDD5C4] text-sm">person</span>
                             <span class="text-xs text-slate-600 dark:text-slate-400">${item.executorName || 'غير محدد'}</span>
                         </div>
                         <div class="flex items-center gap-2 justify-end">
@@ -479,7 +491,7 @@
                                 <span class="material-icons-round text-slate-400 text-sm">groups</span>
                                 <span class="text-xs text-slate-600 dark:text-slate-400">${item.beneficiariesCount || 0} ${audience}</span>
                             ` : `
-                                <span class="material-icons-round text-slate-400 text-sm">calendar_today</span>
+                                <span class="material-icons-round text-[#3D7A5A] dark:text-[#BDD5C4] text-sm">calendar_today</span>
                                 <span class="text-xs text-slate-600 dark:text-slate-400">${date}</span>
                             `}
                         </div>
@@ -730,10 +742,10 @@
             const formattedText = formatAiResponse(text);
             const html = `
                 <div class="flex gap-3">
-                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div class="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center flex-shrink-0">
                         <span class="material-icons-round text-primary text-sm">auto_awesome</span>
                     </div>
-                    <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3 max-w-[85%]">
+                    <div class="bg-primary-light/30 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3 max-w-[85%]">
                         <div class="text-sm ai-response">${formattedText}</div>
                     </div>
                 </div>
@@ -745,14 +757,14 @@
         function showTypingIndicator() {
             const html = `
                 <div id="typing-indicator" class="flex gap-3">
-                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div class="w-8 h-8 bg-primary-light rounded-full flex items-center justify-center flex-shrink-0">
                         <span class="material-icons-round text-primary text-sm">auto_awesome</span>
                     </div>
-                    <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3">
+                    <div class="bg-primary-light/30 dark:bg-slate-800 rounded-2xl rounded-tr-none p-3">
                         <div class="typing-indicator flex gap-1">
-                            <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
-                            <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
-                            <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-primary rounded-full"></span>
+                            <span class="w-2 h-2 bg-primary rounded-full"></span>
+                            <span class="w-2 h-2 bg-primary rounded-full"></span>
                         </div>
                     </div>
                 </div>
