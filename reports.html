@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تقارير المناشط</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Material+Icons+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=Material+Icons+Round" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -20,13 +15,18 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#3D7A5A',
+                        primary: '#2D6A4F',
                         'primary-light': '#BDD5C4',
+                        'primary-lighter': '#E8F3EC',
                         accent: '#FF8B8B',
-                        'background-light': '#F4F4F4',
-                        'background-dark': '#1A1A1A',
-                        'card-light': '#FFFFFF',
-                        'card-dark': '#2A2A2A',
+                        'accent-light': '#FFD4D4',
+                        surface: '#FFFFFF',
+                        'surface-dark': '#1E1E2E',
+                        'bg': '#F0F2F5',
+                        'bg-dark': '#141420',
+                        'card-dark': '#252538',
+                        'text-primary': '#1A1A2E',
+                        'text-secondary': '#6B7280',
                     },
                     fontFamily: {
                         sans: ['Noto Sans Arabic', 'sans-serif'],
@@ -37,26 +37,190 @@
     </script>
     
     <style>
-        body { font-family: 'Noto Sans Arabic', sans-serif; }
-        ::-webkit-scrollbar { width: 0; background: transparent; }
+        body { 
+            font-family: 'Noto Sans Arabic', sans-serif; 
+            background: #F0F2F5;
+        }
+        .dark body { background: #141420; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #BDD5C4; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #2D6A4F; }
         .ios-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-        select { background-image: none; }
+        
+        /* === الأنيميشن === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.15); }
+            50% { box-shadow: 0 0 0 8px rgba(45, 106, 79, 0); }
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-card {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .animate-scale {
+            animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .animate-slide {
+            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
+        /* === كروت KPI === */
+        .kpi-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .kpi-card:active {
+            transform: scale(0.97);
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 0 0 0 80px;
+            opacity: 0.08;
+            transition: all 0.3s;
+        }
+        .kpi-card:nth-child(1)::before { background: #2D6A4F; }
+        .kpi-card:nth-child(2)::before { background: #FF8B8B; }
+        .kpi-card:nth-child(3)::before { background: #F59E0B; }
+        .kpi-card:nth-child(4)::before { background: #3B82F6; }
+        
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: transform 0.3s;
+        }
+        .kpi-card:active .kpi-icon {
+            transform: scale(1.1);
+        }
+        
+        /* === كروت المخططات === */
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid rgba(189, 213, 196, 0.2);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .dark .chart-card {
+            background: #252538;
+            border-color: rgba(255,255,255,0.06);
+        }
+        .chart-card:active {
+            transform: scale(0.985);
+        }
+        
+        /* === الفلتر === */
+        .filter-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%232D6A4F' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 8px center;
+            background-size: 18px;
+            padding-left: 28px;
+            transition: all 0.2s;
+        }
+        .filter-select:focus {
+            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
+        }
+        
+        /* === شريط التقدم === */
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #F0F2F5;
+            overflow: hidden;
+        }
+        .dark .progress-bar { background: #1E1E2E; }
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 0;
+        }
+        
+        /* === Loading skeleton === */
+        .skeleton {
+            background: linear-gradient(90deg, #e8ede9 25%, #d5ddd7 50%, #e8ede9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        .dark .skeleton {
+            background: linear-gradient(90deg, #2a2a3a 25%, #353548 50%, #2a2a3a 75%);
+            background-size: 200% 100%;
+        }
+        
+        /* === Badge === */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .badge-up { background: #E8F3EC; color: #2D6A4F; }
+        .badge-down { background: #FFE8E8; color: #D32F2F; }
+        .dark .badge-up { background: rgba(45, 106, 79, 0.2); color: #7BC89C; }
+        .dark .badge-down { background: rgba(255, 139, 139, 0.15); color: #FF8B8B; }
+        
+        /* Section divider */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .section-header .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to left, transparent, #BDD5C4, transparent);
+        }
+        .dark .section-header .line {
+            background: linear-gradient(to left, transparent, rgba(45, 106, 79, 0.3), transparent);
+        }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<body class="bg-bg dark:bg-bg-dark text-text-primary dark:text-slate-100 min-h-screen pb-28">
 
-    <!-- ==================== الإعدادات والبيانات ==================== -->
     <script>
-        // رابط جلب البيانات من n8n
         const DATA_ENDPOINT = 'https://n8n.smoo1.com/webhook/manashet-data';
-        
-        // فترة التحديث التلقائي (30 ثانية)
         const REFRESH_INTERVAL = 30000;
-        
-        // البيانات (ستُملأ من n8n)
         let activities = [];
         
-        // اختصارات التصنيفات
         const shortNames = {
             'الشريعة والفقه والعبادات': 'الشريعة',
             'التوحيد والعقيدة': 'التوحيد',
@@ -64,9 +228,8 @@
             'الأمن الفكري والفكر المعتدل': 'الأمن الفكري'
         };
         
-        // ألوان التصنيفات - محدثة بالهوية الجديدة
         const classColors = {
-            'الشريعة والفقه والعبادات': '#3D7A5A',
+            'الشريعة والفقه والعبادات': '#2D6A4F',
             'التوحيد والعقيدة': '#FF8B8B',
             'الأخلاق والسلوك والأداب': '#64748B',
             'الأمن الفكري والفكر المعتدل': '#F59E0B'
@@ -74,64 +237,126 @@
     </script>
 
     <!-- ==================== الهيدر ==================== -->
-    <header class="px-5 pt-14 pb-4 sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 ios-blur">
+    <header class="px-5 pt-14 pb-3 sticky top-0 z-30 bg-bg/80 dark:bg-bg-dark/80 ios-blur">
         <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold text-primary dark:text-primary-light">التقارير</h1>
-                <p class="text-sm text-slate-500 dark:text-slate-400">تحليل شامل لبيانات المناشط</p>
+            <div class="animate-slide">
+                <h1 class="text-2xl font-extrabold text-text-primary dark:text-white">التقارير</h1>
+                <p class="text-xs text-text-secondary dark:text-slate-400 mt-0.5">تحليل شامل · تحديث تلقائي</p>
             </div>
-            <div class="flex items-center gap-2">
-                <!-- مؤشر التحديث -->
+            <div class="flex items-center gap-3">
                 <div id="refresh-indicator" class="hidden">
-                    <span class="material-icons-round text-primary animate-spin">sync</span>
+                    <div class="w-8 h-8 rounded-full bg-primary-lighter dark:bg-primary/20 flex items-center justify-center">
+                        <span class="material-icons-round text-primary animate-spin text-lg">sync</span>
+                    </div>
                 </div>
-                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full bg-card-light dark:bg-card-dark shadow flex items-center justify-center border border-primary-light dark:border-slate-700">
-                    <span class="material-icons-round text-slate-600 dark:text-slate-300">dark_mode</span>
+                <button id="refresh-btn" onclick="loadData()" class="w-9 h-9 rounded-xl bg-surface dark:bg-card-dark shadow-sm flex items-center justify-center border border-primary-light/20 dark:border-white/5 transition-transform active:scale-90">
+                    <span class="material-icons-round text-text-secondary dark:text-slate-400 text-lg">refresh</span>
+                </button>
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-surface dark:bg-card-dark shadow-sm flex items-center justify-center border border-primary-light/20 dark:border-white/5 transition-transform active:scale-90">
+                    <span class="material-icons-round text-text-secondary dark:text-slate-400 text-lg">dark_mode</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ==================== المحتوى الرئيسي ==================== -->
-    <main class="px-5 space-y-6">
+    <!-- ==================== المحتوى ==================== -->
+    <main class="px-5 space-y-5 mt-2">
         
-        <!-- ========== KPI Cards ========== -->
-        <div class="grid grid-cols-3 gap-3">
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span class="material-icons-round text-primary dark:text-primary-light text-2xl mb-1 block">groups</span>
-                <span id="kpi-beneficiaries" class="text-primary dark:text-primary-light font-bold text-xl block">0</span>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400">إجمالي المستفيدين</span>
+        <!-- ========== بطاقات KPI ========== -->
+        <div class="grid grid-cols-2 gap-3">
+            <!-- المستفيدين -->
+            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.05s">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="kpi-icon bg-primary-lighter dark:bg-primary/15">
+                        <span class="material-icons-round text-primary">groups</span>
+                    </div>
+                    <span class="badge badge-up">
+                        <span class="material-icons-round" style="font-size:12px">trending_up</span>
+                        نشط
+                    </span>
+                </div>
+                <span id="kpi-beneficiaries" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
+                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">إجمالي المستفيدين</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span class="material-icons-round text-primary dark:text-primary-light text-2xl mb-1 block">event</span>
-                <span id="kpi-activities" class="text-primary dark:text-primary-light font-bold text-xl block">0</span>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400">عدد المناشط</span>
+            
+            <!-- المناشط -->
+            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.12s">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="kpi-icon bg-accent-light/40 dark:bg-accent/15">
+                        <span class="material-icons-round text-accent">event</span>
+                    </div>
+                    <span class="badge badge-up">
+                        <span class="material-icons-round" style="font-size:12px">trending_up</span>
+                        نشط
+                    </span>
+                </div>
+                <span id="kpi-activities" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
+                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">عدد المناشط</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span class="material-icons-round text-primary dark:text-primary-light text-2xl mb-1 block">person</span>
-                <span id="kpi-executors" class="text-primary dark:text-primary-light font-bold text-xl block">0</span>
-                <span class="text-[10px] text-slate-500 dark:text-slate-400">عدد المنفذين</span>
+            
+            <!-- المنفذين -->
+            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.19s">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="kpi-icon bg-amber-50 dark:bg-amber-500/15">
+                        <span class="material-icons-round text-amber-500">person</span>
+                    </div>
+                </div>
+                <span id="kpi-executors" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
+                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">عدد المنفذين</span>
+            </div>
+            
+            <!-- المتوسط -->
+            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.26s">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="kpi-icon bg-blue-50 dark:bg-blue-500/15">
+                        <span class="material-icons-round text-blue-500">avg_pace</span>
+                    </div>
+                </div>
+                <span id="kpi-avg" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
+                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">متوسط المستفيدين</span>
             </div>
         </div>
 
-        <!-- ========== المخطط الدائري - التصنيفات (ثابت) ========== -->
-        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700">
-            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
-                <span class="material-icons-round text-primary text-lg">pie_chart</span>
-                توزيع التصنيفات
-                <span class="text-xs text-slate-400 font-normal">(نسبة كل تصنيف من المجموع)</span>
-            </h3>
-            <div id="pieChart"></div>
+        <!-- ========== نظرة على التوزيع ========== -->
+        <div class="section-header animate-card" style="animation-delay: 0.3s">
+            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">نظرة على التوزيع</span>
+            <div class="line"></div>
+        </div>
+        
+        <!-- الدائري + شريط التصنيفات -->
+        <div class="grid grid-cols-1 gap-4">
+            <div class="chart-card p-5 animate-card" style="animation-delay: 0.35s">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-sm flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-primary-lighter dark:bg-primary/15 flex items-center justify-center">
+                            <span class="material-icons-round text-primary text-base">pie_chart</span>
+                        </div>
+                        توزيع التصنيفات
+                    </h3>
+                    <span class="text-[10px] text-text-secondary dark:text-slate-500 bg-bg dark:bg-bg-dark px-2 py-1 rounded-lg">حسب المستفيدين</span>
+                </div>
+                <div id="pieChart"></div>
+                <!-- أشرطة التقدم -->
+                <div id="classification-bars" class="space-y-3 mt-4 pt-4 border-t border-slate-100 dark:border-white/5"></div>
+            </div>
         </div>
 
-        <!-- ========== مخطط الخط - مع فلتر ========== -->
-        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700">
+        <!-- ========== تحليل الأداء ========== -->
+        <div class="section-header animate-card" style="animation-delay: 0.4s">
+            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">تحليل الأداء</span>
+            <div class="line"></div>
+        </div>
+
+        <!-- مخطط الخط -->
+        <div class="chart-card p-5 animate-card" style="animation-delay: 0.45s">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-sm flex items-center gap-2">
-                    <span class="material-icons-round text-primary text-lg">trending_up</span>
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-primary-lighter dark:bg-primary/15 flex items-center justify-center">
+                        <span class="material-icons-round text-primary text-base">trending_up</span>
+                    </div>
                     تحليل الحضور
                 </h3>
-                <select id="lineChartFilter" onchange="updateLineChart()" class="text-xs bg-primary-light/20 dark:bg-slate-800 rounded-lg px-3 py-2 border border-primary-light/30 dark:border-slate-700 focus:ring-2 focus:ring-primary">
+                <select id="lineChartFilter" onchange="updateLineChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
                     <option value="byDate">حسب التاريخ</option>
                     <option value="byClassification">حسب التصنيف</option>
                     <option value="byCategory">حسب فئة البرنامج</option>
@@ -141,14 +366,22 @@
             <div id="lineChart"></div>
         </div>
 
-        <!-- ========== مخطط الأعمدة - مع فلتر ========== -->
-        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700">
+        <!-- ========== المقارنات ========== -->
+        <div class="section-header animate-card" style="animation-delay: 0.5s">
+            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">المقارنات</span>
+            <div class="line"></div>
+        </div>
+
+        <!-- مخطط الأعمدة -->
+        <div class="chart-card p-5 animate-card" style="animation-delay: 0.55s">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-sm flex items-center gap-2">
-                    <span class="material-icons-round text-primary text-lg">bar_chart</span>
-                    مقارنات
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-accent-light/40 dark:bg-accent/15 flex items-center justify-center">
+                        <span class="material-icons-round text-accent text-base">bar_chart</span>
+                    </div>
+                    ترتيب المنفذين
                 </h3>
-                <select id="barChartFilter" onchange="updateBarChart()" class="text-xs bg-primary-light/20 dark:bg-slate-800 rounded-lg px-3 py-2 border border-primary-light/30 dark:border-slate-700 focus:ring-2 focus:ring-primary">
+                <select id="barChartFilter" onchange="updateBarChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
                     <option value="topExecutors">أكثر المنفذين نشاطاً</option>
                     <option value="executorsBeneficiaries">المنفذين حسب المستفيدين</option>
                     <option value="audienceComparison">مقارنة الفئات المستهدفة</option>
@@ -158,14 +391,21 @@
             <div id="barChart"></div>
         </div>
 
-        <!-- ========== مخطط إضافي - المقارنة الزمنية ========== -->
-        <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700">
+        <!-- ========== التحليل المتقدم ========== -->
+        <div class="section-header animate-card" style="animation-delay: 0.6s">
+            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">التحليل المتقدم</span>
+            <div class="line"></div>
+        </div>
+
+        <div class="chart-card p-5 animate-card" style="animation-delay: 0.65s">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-semibold text-sm flex items-center gap-2">
-                    <span class="material-icons-round text-primary text-lg">compare_arrows</span>
+                <h3 class="font-bold text-sm flex items-center gap-2">
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center">
+                        <span class="material-icons-round text-blue-500 text-base">insights</span>
+                    </div>
                     مقارنة متقدمة
                 </h3>
-                <select id="advancedFilter" onchange="updateAdvancedChart()" class="text-xs bg-primary-light/20 dark:bg-slate-800 rounded-lg px-3 py-2 border border-primary-light/30 dark:border-slate-700 focus:ring-2 focus:ring-primary">
+                <select id="advancedFilter" onchange="updateAdvancedChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
                     <option value="classificationTrend">اتجاه التصنيفات عبر الوقت</option>
                     <option value="weekdayAnalysis">تحليل أيام الأسبوع</option>
                     <option value="cumulativeGrowth">النمو التراكمي</option>
@@ -173,32 +413,37 @@
             </div>
             <div id="advancedChart"></div>
         </div>
+        
+        <!-- فراغ أسفل -->
+        <div class="h-4"></div>
 
     </main>
 
     <!-- ==================== شريط التنقل ==================== -->
-    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-primary-light/30 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
-        <a href="manashet-dashboard.html" class="flex flex-col items-center text-slate-400 dark:text-slate-500">
-            <span class="material-icons-round">dashboard</span>
-            <span class="text-[10px] font-medium mt-1">الرئيسية</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-slate-400 dark:text-slate-500">
-            <span class="material-icons-round">event_note</span>
-            <span class="text-[10px] font-medium mt-1">البرامج</span>
-        </a>
-        <a href="reports.html" class="flex flex-col items-center text-primary">
-            <span class="material-icons-round">analytics</span>
-            <span class="text-[10px] font-medium mt-1">التقارير</span>
-        </a>
-        <a href="#" class="flex flex-col items-center text-slate-400 dark:text-slate-500">
-            <span class="material-icons-round">settings</span>
-            <span class="text-[10px] font-medium mt-1">الإعدادات</span>
-        </a>
+    <nav class="fixed bottom-0 left-0 right-0 bg-surface/90 dark:bg-surface-dark/90 ios-blur border-t border-primary-light/15 dark:border-white/5 z-40">
+        <div class="flex justify-around items-center px-6 pt-2 pb-6">
+            <a href="manashet-dashboard.html" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
+                <span class="material-icons-round text-[22px]">dashboard</span>
+                <span class="text-[10px] font-semibold">الرئيسية</span>
+            </a>
+            <a href="#" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
+                <span class="material-icons-round text-[22px]">event_note</span>
+                <span class="text-[10px] font-semibold">البرامج</span>
+            </a>
+            <a href="reports.html" class="flex flex-col items-center gap-0.5 text-primary relative">
+                <div class="absolute -top-2 w-12 h-1 bg-primary rounded-full"></div>
+                <span class="material-icons-round text-[22px]">analytics</span>
+                <span class="text-[10px] font-bold">التقارير</span>
+            </a>
+            <a href="#" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
+                <span class="material-icons-round text-[22px]">settings</span>
+                <span class="text-[10px] font-semibold">الإعدادات</span>
+            </a>
+        </div>
     </nav>
 
     <!-- ==================== JavaScript ==================== -->
     <script>
-        // ========== المتغيرات العامة ==========
         let pieChart = null;
         let lineChart = null;
         let barChart = null;
@@ -207,7 +452,7 @@
         // ========== الوضع الداكن ==========
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            setTimeout(updateAllCharts, 100);
+            setTimeout(updateAllCharts, 150);
         }
 
         function isDarkMode() {
@@ -216,8 +461,26 @@
 
         function getChartColors() {
             return isDarkMode() 
-                ? { text: '#94a3b8', grid: '#334155', bg: 'transparent' }
-                : { text: '#64748b', grid: '#e2e8f0', bg: 'transparent' };
+                ? { text: '#8892A4', grid: '#2A2A3A', bg: 'transparent', cardBg: '#252538' }
+                : { text: '#8892A4', grid: '#F0F2F5', bg: 'transparent', cardBg: '#ffffff' };
+        }
+
+        // ========== أرقام متحركة ==========
+        function animateNumber(el, target) {
+            const duration = 800;
+            const start = parseInt(el.textContent.replace(/[^\d]/g, '')) || 0;
+            const startTime = performance.now();
+            
+            function update(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // easeOutExpo
+                const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                const current = Math.round(start + (target - start) * eased);
+                el.textContent = current.toLocaleString('ar-SA');
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
         }
 
         // ========== حساب KPIs ==========
@@ -227,16 +490,60 @@
             const total = activities.reduce((sum, a) => sum + a.beneficiaries, 0);
             const count = activities.length;
             const executors = [...new Set(activities.map(a => a.executor))].length;
+            const avg = Math.round(total / count);
             
-            document.getElementById('kpi-beneficiaries').textContent = total.toLocaleString('ar-SA');
-            document.getElementById('kpi-activities').textContent = count.toLocaleString('ar-SA');
-            document.getElementById('kpi-executors').textContent = executors.toLocaleString('ar-SA');
+            animateNumber(document.getElementById('kpi-beneficiaries'), total);
+            animateNumber(document.getElementById('kpi-activities'), count);
+            animateNumber(document.getElementById('kpi-executors'), executors);
+            animateNumber(document.getElementById('kpi-avg'), avg);
         }
 
-        // ========== المخطط الدائري (ثابت) ==========
-        function createPieChart() {
+        // ========== أشرطة التصنيفات ==========
+        function updateClassificationBars() {
             if (activities.length === 0) return;
             
+            const classData = {};
+            activities.forEach(a => {
+                classData[a.classification] = (classData[a.classification] || 0) + a.beneficiaries;
+            });
+            const total = Object.values(classData).reduce((a, b) => a + b, 0);
+            const sorted = Object.entries(classData).sort((a, b) => b[1] - a[1]);
+            
+            const container = document.getElementById('classification-bars');
+            container.innerHTML = sorted.map(([cls, val]) => {
+                const pct = ((val / total) * 100).toFixed(1);
+                const color = classColors[cls] || '#2D6A4F';
+                const name = shortNames[cls] || cls;
+                return `
+                    <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:${color}"></div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-semibold truncate">${name}</span>
+                                <span class="text-[11px] font-bold text-text-secondary dark:text-slate-400">${pct}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="background:${color}" data-width="${pct}%"></div>
+                            </div>
+                        </div>
+                        <span class="text-[11px] font-bold text-text-primary dark:text-white w-12 text-left">${val.toLocaleString('ar-SA')}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // تأخير بسيط لتفعيل الأنيميشن
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    container.querySelectorAll('.progress-fill').forEach(bar => {
+                        bar.style.width = bar.dataset.width;
+                    });
+                }, 100);
+            });
+        }
+
+        // ========== المخطط الدائري ==========
+        function createPieChart() {
+            if (activities.length === 0) return;
             const colors = getChartColors();
             
             const classData = {};
@@ -246,64 +553,55 @@
             
             const labels = Object.keys(classData).map(c => shortNames[c] || c);
             const series = Object.values(classData);
-            const chartColors = Object.keys(classData).map(c => classColors[c] || '#3D7A5A');
+            const chartClrs = Object.keys(classData).map(c => classColors[c] || '#2D6A4F');
             
             const options = {
                 series: series,
                 chart: {
-                    type: 'donut',
-                    height: 280,
+                    type: 'donut', height: 240,
                     fontFamily: 'Noto Sans Arabic, sans-serif',
-                    background: colors.bg
+                    background: colors.bg,
+                    animations: { enabled: true, easing: 'easeinout', speed: 1000, dynamicAnimation: { speed: 500 } }
                 },
                 labels: labels,
-                colors: chartColors,
+                colors: chartClrs,
                 plotOptions: {
                     pie: {
                         donut: {
-                            size: '55%',
+                            size: '60%',
                             labels: {
                                 show: true,
-                                name: { show: true, fontSize: '14px', color: colors.text },
-                                value: { 
-                                    show: true, 
-                                    fontSize: '18px', 
-                                    fontWeight: 'bold',
-                                    formatter: val => val + ' مستفيد'
+                                name: { show: true, fontSize: '13px', color: colors.text, fontWeight: 600 },
+                                value: { show: true, fontSize: '20px', fontWeight: 800, color: isDarkMode() ? '#fff' : '#1A1A2E',
+                                    formatter: val => parseInt(val).toLocaleString('ar-SA')
                                 },
                                 total: {
-                                    show: true,
-                                    label: 'الإجمالي',
-                                    fontSize: '12px',
-                                    color: colors.text,
-                                    formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0) + ' مستفيد'
+                                    show: true, label: 'الإجمالي', fontSize: '11px', color: colors.text,
+                                    formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString('ar-SA')
                                 }
                             }
                         }
                     }
                 },
-                legend: {
-                    position: 'bottom',
-                    fontSize: '11px',
-                    labels: { colors: colors.text }
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: (val) => val.toFixed(1) + '%',
-                    style: { fontSize: '11px' }
-                },
-                tooltip: { y: { formatter: val => val + ' مستفيد' } }
+                legend: { show: false },
+                dataLabels: { enabled: false },
+                stroke: { show: true, width: 3, colors: [isDarkMode() ? '#252538' : '#ffffff'] },
+                tooltip: {
+                    theme: isDarkMode() ? 'dark' : 'light',
+                    y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد' }
+                }
             };
 
             if (pieChart) pieChart.destroy();
             pieChart = new ApexCharts(document.getElementById('pieChart'), options);
             pieChart.render();
+            
+            updateClassificationBars();
         }
 
-        // ========== مخطط الخط (مع فلتر) ==========
+        // ========== مخطط الخط ==========
         function updateLineChart() {
             if (activities.length === 0) return;
-            
             const filter = document.getElementById('lineChartFilter').value;
             const colors = getChartColors();
             let chartData = {};
@@ -343,28 +641,28 @@
             const options = {
                 series: [{ name: 'المستفيدين', data: series }],
                 chart: {
-                    type: chartType,
-                    height: 220,
+                    type: chartType, height: 240,
                     fontFamily: 'Noto Sans Arabic, sans-serif',
                     toolbar: { show: false },
-                    background: colors.bg
+                    background: colors.bg,
+                    animations: { enabled: true, easing: 'easeinout', speed: 800, dynamicAnimation: { speed: 400 } }
                 },
-                colors: ['#3D7A5A'],
+                colors: ['#2D6A4F'],
                 fill: chartType === 'area' ? {
                     type: 'gradient',
-                    gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1 }
-                } : { opacity: 1 },
-                stroke: { curve: 'smooth', width: chartType === 'area' ? 3 : 0 },
-                plotOptions: chartType === 'bar' ? { bar: { borderRadius: 6, columnWidth: '60%' } } : {},
-                dataLabels: { enabled: chartType === 'bar', style: { fontSize: '10px' } },
+                    gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] }
+                } : { opacity: 0.9 },
+                stroke: { curve: 'smooth', width: chartType === 'area' ? 3 : 0, lineCap: 'round' },
+                plotOptions: chartType === 'bar' ? { bar: { borderRadius: 8, columnWidth: '55%' } } : {},
+                dataLabels: { enabled: chartType === 'bar', style: { fontSize: '10px', fontWeight: 700 }, offsetY: -5, background: { enabled: false } },
                 xaxis: {
                     categories: categories,
-                    labels: { style: { colors: colors.text, fontSize: '10px' }, rotate: -45 },
-                    axisBorder: { show: false }
+                    labels: { style: { colors: colors.text, fontSize: '10px', fontWeight: 500 }, rotate: -45 },
+                    axisBorder: { show: false }, axisTicks: { show: false }
                 },
                 yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                grid: { borderColor: colors.grid, strokeDashArray: 4 },
-                tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val + ' مستفيد' } }
+                grid: { borderColor: colors.grid, strokeDashArray: 0, padding: { top: -10 } },
+                tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد' } }
             };
 
             if (lineChart) lineChart.destroy();
@@ -372,10 +670,9 @@
             lineChart.render();
         }
 
-        // ========== مخطط الأعمدة (مع فلتر) ==========
+        // ========== مخطط الأعمدة ==========
         function updateBarChart() {
             if (activities.length === 0) return;
-            
             const filter = document.getElementById('barChartFilter').value;
             const colors = getChartColors();
             let chartData = {};
@@ -402,30 +699,35 @@
             let sorted = Object.entries(chartData).sort((a, b) => b[1] - a[1]);
             if (filter === 'topExecutors' || filter === 'executorsBeneficiaries') sorted = sorted.slice(0, 8);
             
-            const categories = sorted.map(([k]) => k.length > 18 ? k.substring(0, 18) + '...' : k);
-            const series = sorted.map(([, v]) => v);
+            const cats = sorted.map(([k]) => k.length > 16 ? k.substring(0, 16) + '…' : k);
+            const seriesData = sorted.map(([, v]) => v);
+            
+            // تدرج ألوان أخضر
+            const barColors = ['#1B4332','#2D6A4F','#40916C','#52B788','#74C69D','#95D5B2','#B7E4C7','#D8F3DC'];
             
             const options = {
-                series: [{ name: filter.includes('Beneficiaries') || filter.includes('Comparison') ? 'المستفيدين' : 'المناشط', data: series }],
+                series: [{ name: filter.includes('Beneficiaries') || filter.includes('Comparison') ? 'المستفيدين' : 'المناشط', data: seriesData }],
                 chart: {
-                    type: 'bar',
-                    height: 280,
+                    type: 'bar', height: 300,
                     fontFamily: 'Noto Sans Arabic, sans-serif',
                     toolbar: { show: false },
-                    background: colors.bg
+                    background: colors.bg,
+                    animations: { enabled: true, easing: 'easeinout', speed: 900 }
                 },
-                colors: ['#3D7A5A', '#5A9A77', '#7AB894', '#9AD4B1', '#BDD5C4', '#D4E8DC', '#E8F4ED', '#F4FAF6'],
-                plotOptions: { bar: { borderRadius: 6, horizontal: true, distributed: true, barHeight: '70%' } },
+                colors: barColors,
+                plotOptions: { bar: { borderRadius: 8, horizontal: true, distributed: true, barHeight: '65%',
+                    dataLabels: { position: 'top' }
+                } },
                 dataLabels: {
                     enabled: true,
                     textAnchor: 'start',
                     formatter: val => val.toLocaleString('ar-SA'),
-                    style: { colors: ['#fff'], fontSize: '11px' },
-                    offsetX: 5
+                    style: { colors: ['#fff'], fontSize: '11px', fontWeight: 700 },
+                    offsetX: 8
                 },
-                xaxis: { categories: categories, labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                grid: { borderColor: colors.grid, strokeDashArray: 4, xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
+                xaxis: { categories: cats, labels: { style: { colors: colors.text, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { colors: isDarkMode() ? '#ccc' : '#444', fontSize: '11px', fontWeight: 600 } } },
+                grid: { borderColor: colors.grid, strokeDashArray: 0, xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
                 legend: { show: false },
                 tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
             };
@@ -435,13 +737,17 @@
             barChart.render();
         }
 
-        // ========== المخطط المتقدم (مع فلتر) ==========
+        // ========== المخطط المتقدم ==========
         function updateAdvancedChart() {
             if (activities.length === 0) return;
-            
             const filter = document.getElementById('advancedFilter').value;
             const colors = getChartColors();
             let options = {};
+            
+            const baseChartConfig = {
+                fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg,
+                animations: { enabled: true, easing: 'easeinout', speed: 900 }
+            };
             
             switch(filter) {
                 case 'classificationTrend':
@@ -458,13 +764,14 @@
                     
                     options = {
                         series: allClasses.map(cls => ({ name: shortNames[cls] || cls, data: dateClassData[cls] })),
-                        chart: { type: 'line', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
+                        chart: { ...baseChartConfig, type: 'line', height: 260 },
                         colors: Object.values(classColors),
-                        stroke: { curve: 'smooth', width: 2 },
-                        xaxis: { categories: allDates.map(d => d.split('/').slice(1).join('/')), labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 } },
+                        stroke: { curve: 'smooth', width: 2.5 },
+                        markers: { size: 3, strokeWidth: 0 },
+                        xaxis: { categories: allDates.map(d => d.split('/').slice(1).join('/')), labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 }, axisBorder: { show: false }, axisTicks: { show: false } },
                         yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
-                        legend: { position: 'top', fontSize: '10px', labels: { colors: colors.text } },
+                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
+                        legend: { position: 'top', fontSize: '10px', fontWeight: 600, labels: { colors: isDarkMode() ? '#ccc' : '#555' }, markers: { radius: 3 } },
                         tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
                     };
                     break;
@@ -485,16 +792,16 @@
                             { name: 'عدد المناشط', data: weekdayData.count },
                             { name: 'المستفيدين', data: weekdayData.beneficiaries }
                         ],
-                        chart: { type: 'bar', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
-                        colors: ['#3D7A5A', '#FF8B8B'],
-                        plotOptions: { bar: { borderRadius: 4, columnWidth: '60%' } },
-                        xaxis: { categories: weekdays, labels: { style: { colors: colors.text, fontSize: '10px' } } },
+                        chart: { ...baseChartConfig, type: 'bar', height: 260 },
+                        colors: ['#2D6A4F', '#FF8B8B'],
+                        plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
+                        xaxis: { categories: weekdays, labels: { style: { colors: colors.text, fontSize: '10px', fontWeight: 500 } }, axisBorder: { show: false }, axisTicks: { show: false } },
                         yaxis: [
                             { title: { text: 'المناشط', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } },
                             { opposite: true, title: { text: 'المستفيدين', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } }
                         ],
-                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
-                        legend: { position: 'top', fontSize: '10px', labels: { colors: colors.text } },
+                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
+                        legend: { position: 'top', fontSize: '10px', fontWeight: 600, labels: { colors: isDarkMode() ? '#ccc' : '#555' }, markers: { radius: 3 } },
                         tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
                     };
                     break;
@@ -509,15 +816,15 @@
                     
                     options = {
                         series: [{ name: 'النمو التراكمي', data: cumulativeData }],
-                        chart: { type: 'area', height: 250, fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg },
-                        colors: ['#3D7A5A'],
-                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 } },
+                        chart: { ...baseChartConfig, type: 'area', height: 260 },
+                        colors: ['#2D6A4F'],
+                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
                         stroke: { curve: 'smooth', width: 3 },
                         dataLabels: { enabled: false },
-                        xaxis: { type: 'category', labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 } },
+                        xaxis: { type: 'category', labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 }, axisBorder: { show: false }, axisTicks: { show: false } },
                         yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' }, formatter: val => val.toLocaleString('ar-SA') } },
-                        grid: { borderColor: colors.grid, strokeDashArray: 4 },
-                        tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val + ' مستفيد (تراكمي)' } }
+                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
+                        tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد (تراكمي)' } }
                     };
                     break;
             }
@@ -527,60 +834,46 @@
             advancedChart.render();
         }
 
-        // ========== جلب البيانات من n8n ==========
+        // ========== جلب البيانات ==========
         async function loadData() {
-            // إظهار مؤشر التحديث
             const indicator = document.getElementById('refresh-indicator');
+            const refreshBtn = document.getElementById('refresh-btn');
             indicator.classList.remove('hidden');
+            refreshBtn.classList.add('animate-spin');
             
             try {
                 const response = await fetch(DATA_ENDPOINT);
-                if (!response.ok) throw new Error('فشل في جلب البيانات');
+                if (!response.ok) throw new Error('فشل');
                 
                 const data = await response.json();
+                const raw = Array.isArray(data) ? data : (data.data || []);
                 
-                // تحويل البيانات للصيغة المطلوبة
-                if (Array.isArray(data)) {
-                    activities = data.map(item => ({
-                        date: item.executionDate || '',
-                        beneficiaries: item.beneficiariesCount || 0,
-                        classification: item.classification || '',
-                        audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
-                        type: item.programType || 'حضوري',
-                        executor: item.executorName || '',
-                        category: item.programCategory || ''
-                    }));
-                } else if (data.data && Array.isArray(data.data)) {
-                    activities = data.data.map(item => ({
-                        date: item.executionDate || '',
-                        beneficiaries: item.beneficiariesCount || 0,
-                        classification: item.classification || '',
-                        audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
-                        type: item.programType || 'حضوري',
-                        executor: item.executorName || '',
-                        category: item.programCategory || ''
-                    }));
-                }
+                activities = raw.map(item => ({
+                    date: item.executionDate || '',
+                    beneficiaries: item.beneficiariesCount || 0,
+                    classification: item.classification || '',
+                    audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
+                    type: item.programType || 'حضوري',
+                    executor: item.executorName || '',
+                    category: item.programCategory || ''
+                }));
                 
-                // تحديث جميع المخططات
                 updateAllCharts();
                 
             } catch (error) {
-                console.error('خطأ في جلب البيانات:', error);
-                // عرض رسالة خطأ للمستخدم
+                console.error('خطأ:', error);
                 document.getElementById('kpi-beneficiaries').textContent = '!';
                 document.getElementById('kpi-activities').textContent = '!';
                 document.getElementById('kpi-executors').textContent = '!';
+                document.getElementById('kpi-avg').textContent = '!';
             } finally {
-                // إخفاء مؤشر التحديث
                 indicator.classList.add('hidden');
+                refreshBtn.classList.remove('animate-spin');
             }
         }
         
-        // ========== تحديث جميع المخططات ==========
         function updateAllCharts() {
             if (activities.length === 0) return;
-            
             updateKPIs();
             createPieChart();
             updateLineChart();
@@ -588,18 +881,14 @@
             updateAdvancedChart();
         }
 
-        // ========== التحديث التلقائي ==========
         function startAutoRefresh() {
             setInterval(loadData, REFRESH_INTERVAL);
         }
 
-        // ========== التهيئة ==========
-        function init() {
+        document.addEventListener('DOMContentLoaded', () => {
             loadData();
             startAutoRefresh();
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
+        });
     </script>
 
 </body>
