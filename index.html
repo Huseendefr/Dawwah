@@ -64,7 +64,7 @@
             transition: all 0.2s ease;
         }
         .filter-chip.active {
-            background-color: #3D7A5A;
+            background-color: #3B82F6;
             color: white;
         }
         .ai-modal {
@@ -117,16 +117,16 @@
         
         <!-- الإحصائيات العامة -->
         <div class="grid grid-cols-3 gap-3 mb-6">
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span id="total-beneficiaries" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-[#3B82F6]/20 dark:border-slate-700 text-center">
+                <span id="total-beneficiaries" class="text-[#3B82F6] font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">إجمالي المستفيدين</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span id="total-programs" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-[#EF4444]/20 dark:border-slate-700 text-center">
+                <span id="total-programs" class="text-[#EF4444] font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">عدد البرامج</span>
             </div>
-            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-primary-light/30 dark:border-slate-700 text-center">
-                <span id="avg-attendance" class="text-primary dark:text-primary-light font-bold text-xl block">--</span>
+            <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-[#22C55E]/20 dark:border-slate-700 text-center">
+                <span id="avg-attendance" class="text-[#22C55E] font-bold text-xl block">--</span>
                 <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wide">متوسط الحضور</span>
             </div>
         </div>
@@ -161,6 +161,15 @@
         <!-- قائمة البرامج -->
         <div id="programs-list" class="space-y-4">
             <!-- سيتم ملء هذا ديناميكياً -->
+        </div>
+        
+        <!-- زر تحميل المزيد -->
+        <div id="load-more-container" class="hidden mt-6 text-center">
+            <button id="load-more-btn" onclick="loadMore()" class="px-8 py-3 bg-primary text-white rounded-2xl font-medium text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                <span class="material-icons-round text-sm align-middle ml-1">expand_more</span>
+                <span id="load-more-text">تحميل المزيد</span>
+            </button>
+            <p id="showing-count" class="text-xs text-slate-400 mt-2"></p>
         </div>
         
         <!-- حالة التحميل -->
@@ -250,7 +259,7 @@
     
     <!-- شريط التنقل -->
     <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card-light/90 dark:bg-card-dark/90 ios-blur border-t border-primary-light/30 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
-        <a href="manashet-dashboard.html" class="flex flex-col items-center text-primary">
+        <a href="index.html" class="flex flex-col items-center text-primary">
             <span class="material-icons-round">dashboard</span>
             <span class="text-[10px] font-medium mt-1">الرئيسية</span>
         </a>
@@ -283,13 +292,13 @@
             // فترة التحديث التلقائي (بالمللي ثانية) - 30 ثانية
             REFRESH_INTERVAL: 30000,
             
-            // ألوان التصنيفات - محدثة بالهوية الجديدة
+            // ألوان التصنيفات - متنوعة وحيوية
             CLASSIFICATION_COLORS: {
-                'الشريعة والفقه والعبادات': { bg: 'bg-[#BDD5C4]/30 dark:bg-[#3D7A5A]/30', text: 'text-[#3D7A5A] dark:text-[#BDD5C4]' },
-                'التوحيد والعقيدة': { bg: 'bg-[#FF8B8B]/20 dark:bg-[#FF8B8B]/20', text: 'text-[#c45c5c] dark:text-[#FF8B8B]' },
-                'الأخلاق والسلوك والأداب': { bg: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-700 dark:text-slate-300' },
-                'الأمن الفكري والفكر المعتدل': { bg: 'bg-amber-50 dark:bg-amber-900/30', text: 'text-amber-700 dark:text-amber-300' },
-                'default': { bg: 'bg-[#BDD5C4]/20 dark:bg-[#3D7A5A]/20', text: 'text-[#3D7A5A] dark:text-[#BDD5C4]' }
+                'الشريعة والفقه والعبادات': { bg: 'bg-[#3B82F6]/15 dark:bg-[#3B82F6]/25', text: 'text-[#2563EB] dark:text-[#60A5FA]' },
+                'التوحيد والعقيدة': { bg: 'bg-[#EF4444]/15 dark:bg-[#EF4444]/25', text: 'text-[#DC2626] dark:text-[#F87171]' },
+                'الأخلاق والسلوك والأداب': { bg: 'bg-[#22C55E]/15 dark:bg-[#22C55E]/25', text: 'text-[#16A34A] dark:text-[#4ADE80]' },
+                'الأمن الفكري والفكر المعتدل': { bg: 'bg-[#F59E0B]/15 dark:bg-[#F59E0B]/25', text: 'text-[#D97706] dark:text-[#FBBF24]' },
+                'default': { bg: 'bg-[#8B5CF6]/15 dark:bg-[#8B5CF6]/25', text: 'text-[#7C3AED] dark:text-[#A78BFA]' }
             }
         };
 
@@ -299,6 +308,8 @@
         let currentFilter = 'all';
         let searchQuery = '';
         let refreshTimer = null;
+        let displayCount = 20;
+        const PAGE_SIZE = 20;
 
         // ==================== عناصر DOM ====================
         const elements = {
@@ -319,7 +330,11 @@
             closeAi: document.getElementById('close-ai'),
             aiMessages: document.getElementById('ai-messages'),
             aiInput: document.getElementById('ai-input'),
-            aiSend: document.getElementById('ai-send')
+            aiSend: document.getElementById('ai-send'),
+            loadMoreContainer: document.getElementById('load-more-container'),
+            loadMoreBtn: document.getElementById('load-more-btn'),
+            loadMoreText: document.getElementById('load-more-text'),
+            showingCount: document.getElementById('showing-count')
         };
 
         // ==================== دوال جلب البيانات ====================
@@ -421,6 +436,7 @@
 
         // ==================== دوال الفلترة والبحث ====================
         function applyFilters() {
+            displayCount = PAGE_SIZE; // إعادة تعيين عند الفلترة
             filteredData = allData.filter(item => {
                 // فلترة حسب التصنيف
                 const matchesFilter = currentFilter === 'all' || 
@@ -445,12 +461,35 @@
         function renderPrograms() {
             if (filteredData.length === 0) {
                 showEmpty();
+                elements.loadMoreContainer.classList.add('hidden');
                 return;
             }
             
-            elements.programsList.innerHTML = filteredData.map(item => createProgramCard(item)).join('');
+            const visibleData = filteredData.slice(0, displayCount);
+            elements.programsList.innerHTML = visibleData.map(item => createProgramCard(item)).join('');
             elements.programsList.classList.remove('hidden');
             elements.emptyState.classList.add('hidden');
+            
+            // إظهار/إخفاء زر تحميل المزيد
+            if (filteredData.length > displayCount) {
+                elements.loadMoreContainer.classList.remove('hidden');
+                const remaining = filteredData.length - displayCount;
+                elements.showingCount.textContent = `عرض ${displayCount} من ${filteredData.length} — متبقي ${remaining}`;
+            } else {
+                elements.loadMoreContainer.classList.add('hidden');
+            }
+        }
+
+        function loadMore() {
+            displayCount += PAGE_SIZE;
+            renderPrograms();
+            // scroll smoothly to new content
+            setTimeout(() => {
+                const cards = elements.programsList.children;
+                if (cards.length > displayCount - PAGE_SIZE) {
+                    cards[displayCount - PAGE_SIZE]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
         }
 
         function createProgramCard(item) {
@@ -467,7 +506,7 @@
                 : (item.targetAudience || 'غير محدد');
             
             return `
-                <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-[#BDD5C4]/30 dark:border-slate-700 transition-all active:scale-[0.98]">
+                <div class="bg-card-light dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 transition-all active:scale-[0.98]">
                     <div class="flex justify-between items-start mb-3">
                         <span class="px-3 py-1 ${colors.bg} ${colors.text} rounded-full text-[10px] font-bold">${shortClassification}</span>
                         <div class="flex items-center gap-1 text-slate-400">
@@ -481,9 +520,9 @@
                         </div>
                     </div>
                     <h3 class="font-bold text-md mb-1 leading-tight">${item.programName || 'بدون عنوان'}</h3>
-                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-[#BDD5C4]/20 dark:border-slate-800">
+                    <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                         <div class="flex items-center gap-2">
-                            <span class="material-icons-round text-[#3D7A5A] dark:text-[#BDD5C4] text-sm">person</span>
+                            <span class="material-icons-round text-[#8B5CF6] text-sm">person</span>
                             <span class="text-xs text-slate-600 dark:text-slate-400">${item.executorName || 'غير محدد'}</span>
                         </div>
                         <div class="flex items-center gap-2 justify-end">
@@ -491,7 +530,7 @@
                                 <span class="material-icons-round text-slate-400 text-sm">groups</span>
                                 <span class="text-xs text-slate-600 dark:text-slate-400">${item.beneficiariesCount || 0} ${audience}</span>
                             ` : `
-                                <span class="material-icons-round text-[#3D7A5A] dark:text-[#BDD5C4] text-sm">calendar_today</span>
+                                <span class="material-icons-round text-[#F59E0B] text-sm">calendar_today</span>
                                 <span class="text-xs text-slate-600 dark:text-slate-400">${date}</span>
                             `}
                         </div>
