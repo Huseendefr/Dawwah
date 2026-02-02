@@ -86,8 +86,8 @@
         let activities=[];
         const shortNames={'الشريعة والفقه والعبادات':'الشريعة','التوحيد والعقيدة':'التوحيد','الأخلاق والسلوك والأداب':'الأخلاق','الأمن الفكري والفكر المعتدل':'الأمن الفكري'};
         const classColors={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#22C55E','الأمن الفكري والفكر المعتدل':'#F59E0B'};
-        const extraPalette=['#8B5CF6','#EC4899','#06B6D4','#F97316','#14B8A6','#A855F7'];
-        function getColor(cls,i){return classColors[cls]||extraPalette[i%extraPalette.length]}
+        const colorPalette=['#3B82F6','#EF4444','#22C55E','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316'];
+        function getColor(cls,i){return classColors[cls]||colorPalette[i%colorPalette.length]}
     </script>
 
     <!-- Header -->
@@ -330,7 +330,7 @@
         const bc={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#22C55E','الأمن الفكري والفكر المعتدل':'#F59E0B'};
         const el=document.getElementById('cls-bars');
         el.innerHTML=sorted.map(([cls,val],i)=>{
-            const pct=((val/total)*100).toFixed(1);const color=bc[cls]||extraPalette[i%extraPalette.length];const name=shortNames[cls]||cls;
+            const pct=((val/total)*100).toFixed(1);const color=colorPalette[i%colorPalette.length];const name=shortNames[cls]||cls;
             return`<div>
                 <div class="flex justify-between items-center mb-2">
                     <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full" style="background:${color}"></div><span class="text-xs font-semibold text-slate-700 dark:text-slate-300">${name}</span></div>
@@ -371,7 +371,9 @@
     function makePie(){
         if(!activities.length)return;const c=cc();
         const cd={};activities.forEach(a=>{cd[a.classification]=(cd[a.classification]||0)+a.beneficiaries});
-        const labels=Object.keys(cd).map(k=>shortNames[k]||k),series=Object.values(cd),colors=Object.keys(cd).map((k,i)=>getColor(k,i));
+        const keys=Object.keys(cd);
+        const labels=keys.map(k=>shortNames[k]||k),series=Object.values(cd);
+        const colors=keys.map((k,i)=>colorPalette[i%colorPalette.length]);
         const opts={series,chart:{type:'donut',height:260,fontFamily:'Noto Sans Arabic',background:'transparent'},labels,colors,
             plotOptions:{pie:{donut:{size:'65%',labels:{show:true,name:{show:true,fontSize:'13px',color:c.t,offsetY:-4},value:{show:true,fontSize:'20px',fontWeight:'800',color:isDark()?'#fff':'#1e293b',offsetY:4,formatter:v=>parseInt(v).toLocaleString('ar-SA')},total:{show:true,label:'الإجمالي',fontSize:'11px',color:c.t,formatter:w=>w.globals.seriesTotals.reduce((a,b)=>a+b,0).toLocaleString('ar-SA')}}}}},
             legend:{position:'bottom',fontSize:'11px',fontWeight:600,labels:{colors:c.t},markers:{radius:4}},
@@ -444,7 +446,7 @@
                 ac.forEach(cls=>{dcd[cls]=ad.map(d=>activities.filter(a=>a.date===d&&a.classification===cls).reduce((s,a)=>s+a.beneficiaries,0))});
                 opts={series:ac.map(cls=>({name:shortNames[cls]||cls,data:dcd[cls]})),
                     chart:{type:'line',height:260,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,speed:600}},
-                    colors:ac.map((cls,i)=>getColor(cls,i)),stroke:{curve:'smooth',width:2.5},markers:{size:3,strokeWidth:0},
+                    colors:ac.map((cls,i)=>colorPalette[i%colorPalette.length]),stroke:{curve:'smooth',width:2.5},markers:{size:3,strokeWidth:0},
                     xaxis:{categories:ad.map(d=>d.split('/').slice(1).join('/')),labels:{style:{colors:c.t,fontSize:'9px'},rotate:-45},axisBorder:{show:false}},
                     yaxis:{labels:{style:{colors:c.t,fontSize:'10px'}}},grid:{borderColor:c.g,strokeDashArray:0},
                     legend:{position:'top',fontSize:'10px',fontWeight:600,labels:{colors:c.t},markers:{radius:3}},
