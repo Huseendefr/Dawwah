@@ -109,9 +109,6 @@
                 <div id="refresh-indicator" class="hidden">
                     <span class="material-icons-round text-primary animate-spin text-xl">sync</span>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-primary-light dark:bg-slate-700 flex items-center justify-center overflow-hidden">
-                    <span class="material-icons-round text-primary dark:text-primary-light">account_circle</span>
-                </div>
             </div>
         </div>
         
@@ -205,10 +202,9 @@
         </div>
     </main>
     
-    <!-- زر المساعد الذكي - في الأعلى -->
-    <button id="ai-btn" class="fixed top-4 right-4 h-10 px-4 bg-primary text-white rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center z-50 transition-transform active:scale-95 gap-2">
+    <!-- زر المساعد الذكي - تحت زر الوضع الليلي -->
+    <button id="ai-btn" class="fixed top-16 left-4 w-10 h-10 bg-primary text-white rounded-full shadow-lg shadow-primary/30 flex items-center justify-center z-50 transition-transform active:scale-95">
         <span class="material-icons-round text-xl">auto_awesome</span>
-        <span class="text-xs font-bold">المساعد الذكي</span>
     </button>
     
     <!-- نافذة المساعد الذكي -->
@@ -438,9 +434,12 @@
         function applyFilters() {
             displayCount = PAGE_SIZE; // إعادة تعيين عند الفلترة
             filteredData = allData.filter(item => {
+                // تنظيف التصنيف من أحرف RTL المخفية
+                const cleanCls = (item.classification || '').replace(/[\u200F\u200E\u202A-\u202E\u2066-\u2069]/g, '').trim();
+                
                 // فلترة حسب التصنيف
                 const matchesFilter = currentFilter === 'all' || 
-                    (item.classification && item.classification.includes(currentFilter));
+                    cleanCls.includes(currentFilter);
                 
                 // فلترة حسب البحث
                 const searchLower = searchQuery.toLowerCase();
@@ -493,7 +492,9 @@
         }
 
         function createProgramCard(item) {
-            const colors = CONFIG.CLASSIFICATION_COLORS[item.classification] || CONFIG.CLASSIFICATION_COLORS.default;
+            // تنظيف التصنيف من أحرف RTL المخفية
+            const cleanClassification = (item.classification || '').replace(/[\u200F\u200E\u202A-\u202E\u2066-\u2069]/g, '').trim();
+            const colors = CONFIG.CLASSIFICATION_COLORS[cleanClassification] || CONFIG.CLASSIFICATION_COLORS.default;
             const isRemote = item.programType === 'عن بعد';
             const shortClassification = getShortClassification(item.classification);
             
