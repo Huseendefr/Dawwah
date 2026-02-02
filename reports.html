@@ -4,359 +4,196 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تقارير المناشط</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=Material+Icons+Round" rel="stylesheet">
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        primary: '#2D6A4F',
+                        primary: '#3D7A5A',
                         'primary-light': '#BDD5C4',
-                        'primary-lighter': '#E8F3EC',
                         accent: '#FF8B8B',
-                        'accent-light': '#FFD4D4',
+                        'accent-light': '#FFB4B4',
                         surface: '#FFFFFF',
-                        'surface-dark': '#1E1E2E',
-                        'bg': '#F0F2F5',
-                        'bg-dark': '#141420',
-                        'card-dark': '#252538',
-                        'text-primary': '#1A1A2E',
-                        'text-secondary': '#6B7280',
+                        'surface-dark': '#1E1E1E',
+                        card: '#FFFFFF',
+                        'card-dark': '#262626',
+                        bg: '#F2F4F3',
+                        'bg-dark': '#141414',
                     },
-                    fontFamily: {
-                        sans: ['Noto Sans Arabic', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Noto Sans Arabic', 'sans-serif'] },
                 },
             },
         };
     </script>
-    
     <style>
-        body { 
-            font-family: 'Noto Sans Arabic', sans-serif; 
-            background: #F0F2F5;
-        }
-        .dark body { background: #141420; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #BDD5C4; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #2D6A4F; }
-        .ios-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-        
-        /* === الأنيميشن === */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.92); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(45, 106, 79, 0.15); }
-            50% { box-shadow: 0 0 0 8px rgba(45, 106, 79, 0); }
-        }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        @keyframes countUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .animate-card {
-            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        .animate-scale {
-            animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        .animate-slide {
-            animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        
-        /* === كروت KPI === */
-        .kpi-card {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .kpi-card:active {
-            transform: scale(0.97);
-        }
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
-            border-radius: 0 0 0 80px;
-            opacity: 0.08;
-            transition: all 0.3s;
-        }
-        .kpi-card:nth-child(1)::before { background: #2D6A4F; }
-        .kpi-card:nth-child(2)::before { background: #FF8B8B; }
-        .kpi-card:nth-child(3)::before { background: #F59E0B; }
-        .kpi-card:nth-child(4)::before { background: #3B82F6; }
-        
-        .kpi-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            transition: transform 0.3s;
-        }
-        .kpi-card:active .kpi-icon {
-            transform: scale(1.1);
-        }
-        
-        /* === كروت المخططات === */
-        .chart-card {
-            background: white;
-            border-radius: 20px;
-            border: 1px solid rgba(189, 213, 196, 0.2);
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-        }
-        .dark .chart-card {
-            background: #252538;
-            border-color: rgba(255,255,255,0.06);
-        }
-        .chart-card:active {
-            transform: scale(0.985);
-        }
-        
-        /* === الفلتر === */
-        .filter-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%232D6A4F' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: left 8px center;
-            background-size: 18px;
-            padding-left: 28px;
-            transition: all 0.2s;
-        }
-        .filter-select:focus {
-            box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.15);
-        }
-        
-        /* === شريط التقدم === */
-        .progress-bar {
-            height: 6px;
-            border-radius: 3px;
-            background: #F0F2F5;
-            overflow: hidden;
-        }
-        .dark .progress-bar { background: #1E1E2E; }
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            width: 0;
-        }
-        
-        /* === Loading skeleton === */
-        .skeleton {
-            background: linear-gradient(90deg, #e8ede9 25%, #d5ddd7 50%, #e8ede9 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-        .dark .skeleton {
-            background: linear-gradient(90deg, #2a2a3a 25%, #353548 50%, #2a2a3a 75%);
-            background-size: 200% 100%;
-        }
-        
-        /* === Badge === */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-        .badge-up { background: #E8F3EC; color: #2D6A4F; }
-        .badge-down { background: #FFE8E8; color: #D32F2F; }
-        .dark .badge-up { background: rgba(45, 106, 79, 0.2); color: #7BC89C; }
-        .dark .badge-down { background: rgba(255, 139, 139, 0.15); color: #FF8B8B; }
-        
-        /* Section divider */
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .section-header .line {
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to left, transparent, #BDD5C4, transparent);
-        }
-        .dark .section-header .line {
-            background: linear-gradient(to left, transparent, rgba(45, 106, 79, 0.3), transparent);
-        }
+        *{box-sizing:border-box}
+        body{font-family:'Noto Sans Arabic',sans-serif}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-thumb{background:#BDD5C4;border-radius:4px}
+        .dark ::-webkit-scrollbar-thumb{background:#3D7A5A}
+        .ios-blur{backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+
+        .kpi-card{transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+        .kpi-card::after{content:'';position:absolute;bottom:0;right:0;left:0;height:3px;border-radius:0 0 16px 16px;opacity:0;transition:opacity .3s}
+        .kpi-card:nth-child(1)::after{background:#3B82F6}
+        .kpi-card:nth-child(2)::after{background:#EF4444}
+        .kpi-card:nth-child(3)::after{background:#8B5CF6}
+        .kpi-card:nth-child(4)::after{background:#F59E0B}
+        .kpi-card:hover::after{opacity:1}
+        .kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(61,122,90,.1)}
+        .dark .kpi-card:hover{box-shadow:0 12px 32px rgba(0,0,0,.3)}
+
+        .chart-card{transition:all .3s cubic-bezier(.4,0,.2,1)}
+        .chart-card:hover{box-shadow:0 6px 24px rgba(61,122,90,.06)}
+        .dark .chart-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.2)}
+
+        .badge-up{background:rgba(61,122,90,.1);color:#3D7A5A}
+        .badge-down{background:rgba(255,139,139,.15);color:#E06060}
+        .dark .badge-up{background:rgba(189,213,196,.15);color:#BDD5C4}
+
+        .progress-track{background:#F2F4F3;height:8px;border-radius:4px;overflow:hidden}
+        .dark .progress-track{background:#1E1E1E}
+        .progress-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(.4,0,.2,1);width:0}
+
+        @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+        .anim-in{animation:fadeUp .45s ease forwards}
+        .stagger>*{opacity:0;animation:fadeUp .4s ease forwards}
+        .stagger>*:nth-child(1){animation-delay:.05s}
+        .stagger>*:nth-child(2){animation-delay:.1s}
+        .stagger>*:nth-child(3){animation-delay:.15s}
+        .stagger>*:nth-child(4){animation-delay:.2s}
+        .stagger>*:nth-child(5){animation-delay:.25s}
+        .stagger>*:nth-child(6){animation-delay:.3s}
+
+        select{background-image:none;-webkit-appearance:none;cursor:pointer}
+        .spark{height:40px;margin-top:8px}
+
+        .pulse-dot{width:8px;height:8px;border-radius:50%;background:#3D7A5A;animation:pulse-r 2s infinite}
+        @keyframes pulse-r{0%{box-shadow:0 0 0 0 rgba(61,122,90,.4)}70%{box-shadow:0 0 0 6px rgba(61,122,90,0)}100%{box-shadow:0 0 0 0 rgba(61,122,90,0)}}
+
+        .apexcharts-tooltip{border-radius:12px!important;border:none!important;box-shadow:0 8px 30px rgba(0,0,0,.12)!important}
     </style>
 </head>
-<body class="bg-bg dark:bg-bg-dark text-text-primary dark:text-slate-100 min-h-screen pb-28">
+<body class="bg-bg dark:bg-bg-dark text-slate-900 dark:text-slate-100 min-h-screen pb-28">
 
     <script>
-        const DATA_ENDPOINT = 'https://n8n.smoo1.com/webhook/manashet-data';
-        const REFRESH_INTERVAL = 30000;
-        let activities = [];
-        
-        const shortNames = {
-            'الشريعة والفقه والعبادات': 'الشريعة',
-            'التوحيد والعقيدة': 'التوحيد',
-            'الأخلاق والسلوك والأداب': 'الأخلاق',
-            'الأمن الفكري والفكر المعتدل': 'الأمن الفكري'
-        };
-        
-        const classColors = {
-            'الشريعة والفقه والعبادات': '#2D6A4F',
-            'التوحيد والعقيدة': '#FF8B8B',
-            'الأخلاق والسلوك والأداب': '#64748B',
-            'الأمن الفكري والفكر المعتدل': '#F59E0B'
-        };
+        const DATA_ENDPOINT='https://n8n.smoo1.com/webhook/manashet-data';
+        const REFRESH_INTERVAL=30000;
+        let activities=[];
+        const shortNames={'الشريعة والفقه والعبادات':'الشريعة','التوحيد والعقيدة':'التوحيد','الأخلاق والسلوك والأداب':'الأخلاق','الأمن الفكري والفكر المعتدل':'الأمن الفكري'};
+        const classColors={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#10B981','الأمن الفكري والفكر المعتدل':'#F59E0B'};
     </script>
 
-    <!-- ==================== الهيدر ==================== -->
-    <header class="px-5 pt-14 pb-3 sticky top-0 z-30 bg-bg/80 dark:bg-bg-dark/80 ios-blur">
+    <!-- Header -->
+    <header class="px-5 pt-14 pb-5 sticky top-0 z-30 bg-bg/70 dark:bg-bg-dark/70 ios-blur">
         <div class="flex justify-between items-center">
-            <div class="animate-slide">
-                <h1 class="text-2xl font-extrabold text-text-primary dark:text-white">التقارير</h1>
-                <p class="text-xs text-text-secondary dark:text-slate-400 mt-0.5">تحليل شامل · تحديث تلقائي</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <div id="refresh-indicator" class="hidden">
-                    <div class="w-8 h-8 rounded-full bg-primary-lighter dark:bg-primary/20 flex items-center justify-center">
-                        <span class="material-icons-round text-primary animate-spin text-lg">sync</span>
-                    </div>
+            <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <div class="pulse-dot"></div>
+                    <span class="text-xs font-medium text-primary dark:text-primary-light">بيانات محدّثة</span>
                 </div>
-                <button id="refresh-btn" onclick="loadData()" class="w-9 h-9 rounded-xl bg-surface dark:bg-card-dark shadow-sm flex items-center justify-center border border-primary-light/20 dark:border-white/5 transition-transform active:scale-90">
-                    <span class="material-icons-round text-text-secondary dark:text-slate-400 text-lg">refresh</span>
-                </button>
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-surface dark:bg-card-dark shadow-sm flex items-center justify-center border border-primary-light/20 dark:border-white/5 transition-transform active:scale-90">
-                    <span class="material-icons-round text-text-secondary dark:text-slate-400 text-lg">dark_mode</span>
+                <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white">التقارير والتحليلات</h1>
+                <p class="text-sm text-slate-400 mt-0.5">نظرة تحليلية شاملة على أداء المناشط</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <div id="refresh-indicator" class="hidden">
+                    <span class="material-icons-round text-primary animate-spin">sync</span>
+                </div>
+                <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-2xl bg-card dark:bg-card-dark shadow-sm flex items-center justify-center border border-slate-100 dark:border-slate-700/50 transition-all hover:scale-105 active:scale-95">
+                    <span class="material-icons-round text-slate-500 dark:text-slate-400 text-xl">dark_mode</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- ==================== المحتوى ==================== -->
-    <main class="px-5 space-y-5 mt-2">
-        
-        <!-- ========== بطاقات KPI ========== -->
-        <div class="grid grid-cols-2 gap-3">
-            <!-- المستفيدين -->
-            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.05s">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="kpi-icon bg-primary-lighter dark:bg-primary/15">
-                        <span class="material-icons-round text-primary">groups</span>
+    <main class="px-5 space-y-5">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 gap-3 stagger">
+            <div class="kpi-card bg-card dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-9 h-9 rounded-xl bg-[#3B82F6]/10 dark:bg-[#3B82F6]/20 flex items-center justify-center">
+                        <span class="material-icons-round text-[#3B82F6] text-lg">supervisor_account</span>
                     </div>
-                    <span class="badge badge-up">
-                        <span class="material-icons-round" style="font-size:12px">trending_up</span>
-                        نشط
-                    </span>
+                    <span id="kpi-ben-badge" class="badge-up text-[10px] font-bold px-2 py-0.5 rounded-full hidden"></span>
                 </div>
-                <span id="kpi-beneficiaries" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
-                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">إجمالي المستفيدين</span>
+                <span id="kpi-beneficiaries" class="text-2xl font-extrabold text-slate-900 dark:text-white block">0</span>
+                <span class="text-[11px] text-slate-400 font-medium">إجمالي المستفيدين</span>
+                <div class="spark" id="spark-ben"></div>
             </div>
-            
-            <!-- المناشط -->
-            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.12s">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="kpi-icon bg-accent-light/40 dark:bg-accent/15">
-                        <span class="material-icons-round text-accent">event</span>
+            <div class="kpi-card bg-card dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-9 h-9 rounded-xl bg-[#EF4444]/10 dark:bg-[#EF4444]/20 flex items-center justify-center">
+                        <span class="material-icons-round text-[#EF4444] text-lg">event</span>
                     </div>
-                    <span class="badge badge-up">
-                        <span class="material-icons-round" style="font-size:12px">trending_up</span>
-                        نشط
-                    </span>
+                    <span id="kpi-act-badge" class="badge-up text-[10px] font-bold px-2 py-0.5 rounded-full hidden"></span>
                 </div>
-                <span id="kpi-activities" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
-                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">عدد المناشط</span>
+                <span id="kpi-activities" class="text-2xl font-extrabold text-slate-900 dark:text-white block">0</span>
+                <span class="text-[11px] text-slate-400 font-medium">عدد المناشط</span>
+                <div class="spark" id="spark-act"></div>
             </div>
-            
-            <!-- المنفذين -->
-            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.19s">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="kpi-icon bg-amber-50 dark:bg-amber-500/15">
-                        <span class="material-icons-round text-amber-500">person</span>
+            <div class="kpi-card bg-card dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-9 h-9 rounded-xl bg-[#8B5CF6]/10 dark:bg-[#8B5CF6]/20 flex items-center justify-center">
+                        <span class="material-icons-round text-[#8B5CF6] text-lg">person</span>
                     </div>
                 </div>
-                <span id="kpi-executors" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
-                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">عدد المنفذين</span>
+                <span id="kpi-executors" class="text-2xl font-extrabold text-slate-900 dark:text-white block">0</span>
+                <span class="text-[11px] text-slate-400 font-medium">عدد المنفذين</span>
+                <div class="spark" id="spark-exec"></div>
             </div>
-            
-            <!-- المتوسط -->
-            <div class="kpi-card bg-surface dark:bg-card-dark rounded-2xl p-4 shadow-sm border border-primary-light/15 dark:border-white/5 animate-card" style="animation-delay: 0.26s">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="kpi-icon bg-blue-50 dark:bg-blue-500/15">
-                        <span class="material-icons-round text-blue-500">avg_pace</span>
+            <div class="kpi-card bg-card dark:bg-card-dark p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="w-9 h-9 rounded-xl bg-[#F59E0B]/10 dark:bg-[#F59E0B]/20 flex items-center justify-center">
+                        <span class="material-icons-round text-[#F59E0B] text-lg">analytics</span>
                     </div>
                 </div>
-                <span id="kpi-avg" class="text-2xl font-extrabold text-text-primary dark:text-white block">0</span>
-                <span class="text-[11px] text-text-secondary dark:text-slate-400 mt-0.5 block">متوسط المستفيدين</span>
+                <span id="kpi-avg" class="text-2xl font-extrabold text-slate-900 dark:text-white block">0</span>
+                <span class="text-[11px] text-slate-400 font-medium">متوسط المستفيدين</span>
+                <div class="spark" id="spark-avg"></div>
             </div>
         </div>
 
-        <!-- ========== نظرة على التوزيع ========== -->
-        <div class="section-header animate-card" style="animation-delay: 0.3s">
-            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">نظرة على التوزيع</span>
-            <div class="line"></div>
-        </div>
-        
-        <!-- الدائري + شريط التصنيفات -->
-        <div class="grid grid-cols-1 gap-4">
-            <div class="chart-card p-5 animate-card" style="animation-delay: 0.35s">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-sm flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-lg bg-primary-lighter dark:bg-primary/15 flex items-center justify-center">
-                            <span class="material-icons-round text-primary text-base">pie_chart</span>
-                        </div>
-                        توزيع التصنيفات
-                    </h3>
-                    <span class="text-[10px] text-text-secondary dark:text-slate-500 bg-bg dark:bg-bg-dark px-2 py-1 rounded-lg">حسب المستفيدين</span>
+        <!-- Classification Progress Bars -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">توزيع التصنيفات</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">نسبة كل تصنيف من إجمالي المستفيدين</p>
                 </div>
-                <div id="pieChart"></div>
-                <!-- أشرطة التقدم -->
-                <div id="classification-bars" class="space-y-3 mt-4 pt-4 border-t border-slate-100 dark:border-white/5"></div>
+                <div class="w-8 h-8 rounded-xl bg-[#3B82F6]/10 flex items-center justify-center">
+                    <span class="material-icons-round text-[#3B82F6] text-sm">donut_large</span>
+                </div>
             </div>
+            <div id="cls-bars" class="space-y-4"></div>
         </div>
 
-        <!-- ========== تحليل الأداء ========== -->
-        <div class="section-header animate-card" style="animation-delay: 0.4s">
-            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">تحليل الأداء</span>
-            <div class="line"></div>
+        <!-- Pie Chart -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">توزيع المستفيدين</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">حسب التصنيف الشرعي</p>
+                </div>
+                <div class="w-8 h-8 rounded-xl bg-[#EF4444]/10 flex items-center justify-center">
+                    <span class="material-icons-round text-[#EF4444] text-sm">pie_chart</span>
+                </div>
+            </div>
+            <div id="pieChart"></div>
         </div>
 
-        <!-- مخطط الخط -->
-        <div class="chart-card p-5 animate-card" style="animation-delay: 0.45s">
+        <!-- Line Chart with filter -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-primary-lighter dark:bg-primary/15 flex items-center justify-center">
-                        <span class="material-icons-round text-primary text-base">trending_up</span>
-                    </div>
-                    تحليل الحضور
-                </h3>
-                <select id="lineChartFilter" onchange="updateLineChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">تحليل الحضور</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">اتجاهات المستفيدين</p>
+                </div>
+                <select id="lineFilter" onchange="updateLineChart()" class="text-[11px] font-medium bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary/30">
                     <option value="byDate">حسب التاريخ</option>
                     <option value="byClassification">حسب التصنيف</option>
                     <option value="byCategory">حسب فئة البرنامج</option>
@@ -366,22 +203,14 @@
             <div id="lineChart"></div>
         </div>
 
-        <!-- ========== المقارنات ========== -->
-        <div class="section-header animate-card" style="animation-delay: 0.5s">
-            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">المقارنات</span>
-            <div class="line"></div>
-        </div>
-
-        <!-- مخطط الأعمدة -->
-        <div class="chart-card p-5 animate-card" style="animation-delay: 0.55s">
+        <!-- Bar Chart with filter -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-accent-light/40 dark:bg-accent/15 flex items-center justify-center">
-                        <span class="material-icons-round text-accent text-base">bar_chart</span>
-                    </div>
-                    ترتيب المنفذين
-                </h3>
-                <select id="barChartFilter" onchange="updateBarChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">مقارنات</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">أداء المنفذين والفئات</p>
+                </div>
+                <select id="barFilter" onchange="updateBarChart()" class="text-[11px] font-medium bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary/30">
                     <option value="topExecutors">أكثر المنفذين نشاطاً</option>
                     <option value="executorsBeneficiaries">المنفذين حسب المستفيدين</option>
                     <option value="audienceComparison">مقارنة الفئات المستهدفة</option>
@@ -391,505 +220,280 @@
             <div id="barChart"></div>
         </div>
 
-        <!-- ========== التحليل المتقدم ========== -->
-        <div class="section-header animate-card" style="animation-delay: 0.6s">
-            <span class="text-xs font-bold text-text-secondary dark:text-slate-500 uppercase tracking-wider">التحليل المتقدم</span>
-            <div class="line"></div>
-        </div>
-
-        <div class="chart-card p-5 animate-card" style="animation-delay: 0.65s">
+        <!-- Advanced Chart with filter -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-sm flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-500/15 flex items-center justify-center">
-                        <span class="material-icons-round text-blue-500 text-base">insights</span>
-                    </div>
-                    مقارنة متقدمة
-                </h3>
-                <select id="advancedFilter" onchange="updateAdvancedChart()" class="filter-select text-xs bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-primary-light/20 dark:border-white/8 focus:ring-2 focus:ring-primary font-medium text-text-primary dark:text-slate-200">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">تحليلات متقدمة</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">اتجاهات وأنماط عميقة</p>
+                </div>
+                <select id="advFilter" onchange="updateAdvChart()" class="text-[11px] font-medium bg-bg dark:bg-bg-dark rounded-xl px-3 py-2 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 focus:ring-2 focus:ring-primary/30">
                     <option value="classificationTrend">اتجاه التصنيفات عبر الوقت</option>
                     <option value="weekdayAnalysis">تحليل أيام الأسبوع</option>
                     <option value="cumulativeGrowth">النمو التراكمي</option>
                 </select>
             </div>
-            <div id="advancedChart"></div>
+            <div id="advChart"></div>
         </div>
-        
-        <!-- فراغ أسفل -->
-        <div class="h-4"></div>
+
+        <!-- Top Executors Leaderboard -->
+        <div class="chart-card bg-card dark:bg-card-dark p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="font-bold text-sm text-slate-900 dark:text-white">أعلى المنفذين أداءً</h3>
+                    <p class="text-[11px] text-slate-400 mt-0.5">ترتيب حسب عدد المستفيدين</p>
+                </div>
+                <div class="w-8 h-8 rounded-xl bg-[#8B5CF6]/10 flex items-center justify-center">
+                    <span class="material-icons-round text-[#8B5CF6] text-sm">leaderboard</span>
+                </div>
+            </div>
+            <div id="top-exec" class="space-y-3"></div>
+        </div>
 
     </main>
 
-    <!-- ==================== شريط التنقل ==================== -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface/90 dark:bg-surface-dark/90 ios-blur border-t border-primary-light/15 dark:border-white/5 z-40">
-        <div class="flex justify-around items-center px-6 pt-2 pb-6">
-            <a href="manashet-dashboard.html" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
-                <span class="material-icons-round text-[22px]">dashboard</span>
-                <span class="text-[10px] font-semibold">الرئيسية</span>
-            </a>
-            <a href="#" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
-                <span class="material-icons-round text-[22px]">event_note</span>
-                <span class="text-[10px] font-semibold">البرامج</span>
-            </a>
-            <a href="reports.html" class="flex flex-col items-center gap-0.5 text-primary relative">
-                <div class="absolute -top-2 w-12 h-1 bg-primary rounded-full"></div>
-                <span class="material-icons-round text-[22px]">analytics</span>
-                <span class="text-[10px] font-bold">التقارير</span>
-            </a>
-            <a href="#" class="flex flex-col items-center gap-0.5 text-text-secondary dark:text-slate-500 transition-colors">
-                <span class="material-icons-round text-[22px]">settings</span>
-                <span class="text-[10px] font-semibold">الإعدادات</span>
-            </a>
-        </div>
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 h-20 bg-card/90 dark:bg-card-dark/90 ios-blur border-t border-slate-100 dark:border-slate-800 flex justify-around items-center px-6 pb-4 z-40">
+        <a href="manashet-dashboard.html" class="flex flex-col items-center text-slate-400 hover:text-primary transition-colors">
+            <span class="material-icons-round text-2xl">dashboard</span>
+            <span class="text-[10px] font-medium mt-1">الرئيسية</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-slate-400">
+            <span class="material-icons-round text-2xl">event_note</span>
+            <span class="text-[10px] font-medium mt-1">البرامج</span>
+        </a>
+        <a href="reports.html" class="flex flex-col items-center text-primary dark:text-primary-light">
+            <span class="material-icons-round text-2xl">analytics</span>
+            <span class="text-[10px] font-medium mt-1">التقارير</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-slate-400">
+            <span class="material-icons-round text-2xl">settings</span>
+            <span class="text-[10px] font-medium mt-1">الإعدادات</span>
+        </a>
     </nav>
 
-    <!-- ==================== JavaScript ==================== -->
     <script>
-        let pieChart = null;
-        let lineChart = null;
-        let barChart = null;
-        let advancedChart = null;
+    let pieChart=null, lineChart=null, barChart=null, advChart=null, sparks={};
 
-        // ========== الوضع الداكن ==========
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            setTimeout(updateAllCharts, 150);
+    function toggleDarkMode(){document.documentElement.classList.toggle('dark');setTimeout(updateAll,150)}
+    function isDark(){return document.documentElement.classList.contains('dark')}
+    function cc(){return isDark()?{t:'#94a3b8',g:'#2a2a2a',c:'#262626'}:{t:'#64748b',g:'#f0f2f1',c:'#fff'}}
+
+    // Animated counter with easeOutCubic
+    function anim(el,target,dur=800){
+        const start=parseInt(el.textContent.replace(/[^\d]/g,''))||0;
+        if(start===target)return;
+        const t0=performance.now();
+        function tick(now){
+            const p=Math.min((now-t0)/dur,1);
+            const e=1-Math.pow(1-p,3);
+            el.textContent=Math.round(start+(target-start)*e).toLocaleString('ar-SA');
+            if(p<1)requestAnimationFrame(tick);
         }
+        requestAnimationFrame(tick);
+    }
 
-        function isDarkMode() {
-            return document.documentElement.classList.contains('dark');
-        }
+    function updateKPIs(){
+        if(!activities.length)return;
+        const total=activities.reduce((s,a)=>s+a.beneficiaries,0);
+        const count=activities.length;
+        const execs=[...new Set(activities.map(a=>a.executor))].length;
+        const avg=Math.round(total/count);
+        anim(document.getElementById('kpi-beneficiaries'),total);
+        anim(document.getElementById('kpi-activities'),count);
+        anim(document.getElementById('kpi-executors'),execs);
+        anim(document.getElementById('kpi-avg'),avg);
+        const b1=document.getElementById('kpi-ben-badge');b1.classList.remove('hidden');b1.textContent=total.toLocaleString('ar-SA')+' مستفيد';
+        const b2=document.getElementById('kpi-act-badge');b2.classList.remove('hidden');b2.textContent=count+' نشاط';
+    }
 
-        function getChartColors() {
-            return isDarkMode() 
-                ? { text: '#8892A4', grid: '#2A2A3A', bg: 'transparent', cardBg: '#252538' }
-                : { text: '#8892A4', grid: '#F0F2F5', bg: 'transparent', cardBg: '#ffffff' };
-        }
-
-        // ========== أرقام متحركة ==========
-        function animateNumber(el, target) {
-            const duration = 800;
-            const start = parseInt(el.textContent.replace(/[^\d]/g, '')) || 0;
-            const startTime = performance.now();
-            
-            function update(now) {
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                // easeOutExpo
-                const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-                const current = Math.round(start + (target - start) * eased);
-                el.textContent = current.toLocaleString('ar-SA');
-                if (progress < 1) requestAnimationFrame(update);
-            }
-            requestAnimationFrame(update);
-        }
-
-        // ========== حساب KPIs ==========
-        function updateKPIs() {
-            if (activities.length === 0) return;
-            
-            const total = activities.reduce((sum, a) => sum + a.beneficiaries, 0);
-            const count = activities.length;
-            const executors = [...new Set(activities.map(a => a.executor))].length;
-            const avg = Math.round(total / count);
-            
-            animateNumber(document.getElementById('kpi-beneficiaries'), total);
-            animateNumber(document.getElementById('kpi-activities'), count);
-            animateNumber(document.getElementById('kpi-executors'), executors);
-            animateNumber(document.getElementById('kpi-avg'), avg);
-        }
-
-        // ========== أشرطة التصنيفات ==========
-        function updateClassificationBars() {
-            if (activities.length === 0) return;
-            
-            const classData = {};
-            activities.forEach(a => {
-                classData[a.classification] = (classData[a.classification] || 0) + a.beneficiaries;
-            });
-            const total = Object.values(classData).reduce((a, b) => a + b, 0);
-            const sorted = Object.entries(classData).sort((a, b) => b[1] - a[1]);
-            
-            const container = document.getElementById('classification-bars');
-            container.innerHTML = sorted.map(([cls, val]) => {
-                const pct = ((val / total) * 100).toFixed(1);
-                const color = classColors[cls] || '#2D6A4F';
-                const name = shortNames[cls] || cls;
-                return `
-                    <div class="flex items-center gap-3">
-                        <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:${color}"></div>
-                        <div class="flex-1 min-w-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-xs font-semibold truncate">${name}</span>
-                                <span class="text-[11px] font-bold text-text-secondary dark:text-slate-400">${pct}%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="background:${color}" data-width="${pct}%"></div>
-                            </div>
-                        </div>
-                        <span class="text-[11px] font-bold text-text-primary dark:text-white w-12 text-left">${val.toLocaleString('ar-SA')}</span>
-                    </div>
-                `;
-            }).join('');
-            
-            // تأخير بسيط لتفعيل الأنيميشن
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    container.querySelectorAll('.progress-fill').forEach(bar => {
-                        bar.style.width = bar.dataset.width;
-                    });
-                }, 100);
-            });
-        }
-
-        // ========== المخطط الدائري ==========
-        function createPieChart() {
-            if (activities.length === 0) return;
-            const colors = getChartColors();
-            
-            const classData = {};
-            activities.forEach(a => {
-                classData[a.classification] = (classData[a.classification] || 0) + a.beneficiaries;
-            });
-            
-            const labels = Object.keys(classData).map(c => shortNames[c] || c);
-            const series = Object.values(classData);
-            const chartClrs = Object.keys(classData).map(c => classColors[c] || '#2D6A4F');
-            
-            const options = {
-                series: series,
-                chart: {
-                    type: 'donut', height: 240,
-                    fontFamily: 'Noto Sans Arabic, sans-serif',
-                    background: colors.bg,
-                    animations: { enabled: true, easing: 'easeinout', speed: 1000, dynamicAnimation: { speed: 500 } }
-                },
-                labels: labels,
-                colors: chartClrs,
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            size: '60%',
-                            labels: {
-                                show: true,
-                                name: { show: true, fontSize: '13px', color: colors.text, fontWeight: 600 },
-                                value: { show: true, fontSize: '20px', fontWeight: 800, color: isDarkMode() ? '#fff' : '#1A1A2E',
-                                    formatter: val => parseInt(val).toLocaleString('ar-SA')
-                                },
-                                total: {
-                                    show: true, label: 'الإجمالي', fontSize: '11px', color: colors.text,
-                                    formatter: w => w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString('ar-SA')
-                                }
-                            }
-                        }
-                    }
-                },
-                legend: { show: false },
-                dataLabels: { enabled: false },
-                stroke: { show: true, width: 3, colors: [isDarkMode() ? '#252538' : '#ffffff'] },
-                tooltip: {
-                    theme: isDarkMode() ? 'dark' : 'light',
-                    y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد' }
-                }
-            };
-
-            if (pieChart) pieChart.destroy();
-            pieChart = new ApexCharts(document.getElementById('pieChart'), options);
-            pieChart.render();
-            
-            updateClassificationBars();
-        }
-
-        // ========== مخطط الخط ==========
-        function updateLineChart() {
-            if (activities.length === 0) return;
-            const filter = document.getElementById('lineChartFilter').value;
-            const colors = getChartColors();
-            let chartData = {};
-            let chartType = 'area';
-            
-            switch(filter) {
-                case 'byDate':
-                    activities.forEach(a => {
-                        const shortDate = a.date.split('/').slice(1).join('/');
-                        chartData[shortDate] = (chartData[shortDate] || 0) + a.beneficiaries;
-                    });
-                    break;
-                case 'byClassification':
-                    activities.forEach(a => {
-                        const name = shortNames[a.classification] || a.classification;
-                        chartData[name] = (chartData[name] || 0) + a.beneficiaries;
-                    });
-                    chartType = 'bar';
-                    break;
-                case 'byCategory':
-                    activities.forEach(a => {
-                        chartData[a.category] = (chartData[a.category] || 0) + a.beneficiaries;
-                    });
-                    chartType = 'bar';
-                    break;
-                case 'byType':
-                    activities.forEach(a => {
-                        chartData[a.type] = (chartData[a.type] || 0) + a.beneficiaries;
-                    });
-                    chartType = 'bar';
-                    break;
-            }
-            
-            const categories = Object.keys(chartData);
-            const series = Object.values(chartData);
-            
-            const options = {
-                series: [{ name: 'المستفيدين', data: series }],
-                chart: {
-                    type: chartType, height: 240,
-                    fontFamily: 'Noto Sans Arabic, sans-serif',
-                    toolbar: { show: false },
-                    background: colors.bg,
-                    animations: { enabled: true, easing: 'easeinout', speed: 800, dynamicAnimation: { speed: 400 } }
-                },
-                colors: ['#2D6A4F'],
-                fill: chartType === 'area' ? {
-                    type: 'gradient',
-                    gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 90, 100] }
-                } : { opacity: 0.9 },
-                stroke: { curve: 'smooth', width: chartType === 'area' ? 3 : 0, lineCap: 'round' },
-                plotOptions: chartType === 'bar' ? { bar: { borderRadius: 8, columnWidth: '55%' } } : {},
-                dataLabels: { enabled: chartType === 'bar', style: { fontSize: '10px', fontWeight: 700 }, offsetY: -5, background: { enabled: false } },
-                xaxis: {
-                    categories: categories,
-                    labels: { style: { colors: colors.text, fontSize: '10px', fontWeight: 500 }, rotate: -45 },
-                    axisBorder: { show: false }, axisTicks: { show: false }
-                },
-                yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                grid: { borderColor: colors.grid, strokeDashArray: 0, padding: { top: -10 } },
-                tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد' } }
-            };
-
-            if (lineChart) lineChart.destroy();
-            lineChart = new ApexCharts(document.getElementById('lineChart'), options);
-            lineChart.render();
-        }
-
-        // ========== مخطط الأعمدة ==========
-        function updateBarChart() {
-            if (activities.length === 0) return;
-            const filter = document.getElementById('barChartFilter').value;
-            const colors = getChartColors();
-            let chartData = {};
-            
-            switch(filter) {
-                case 'topExecutors':
-                    activities.forEach(a => { chartData[a.executor] = (chartData[a.executor] || 0) + 1; });
-                    break;
-                case 'executorsBeneficiaries':
-                    activities.forEach(a => { chartData[a.executor] = (chartData[a.executor] || 0) + a.beneficiaries; });
-                    break;
-                case 'audienceComparison':
-                    activities.forEach(a => {
-                        a.audience.split(',').map(s => s.trim()).forEach(aud => {
-                            chartData[aud] = (chartData[aud] || 0) + a.beneficiaries;
-                        });
-                    });
-                    break;
-                case 'categoryComparison':
-                    activities.forEach(a => { chartData[a.category] = (chartData[a.category] || 0) + a.beneficiaries; });
-                    break;
-            }
-            
-            let sorted = Object.entries(chartData).sort((a, b) => b[1] - a[1]);
-            if (filter === 'topExecutors' || filter === 'executorsBeneficiaries') sorted = sorted.slice(0, 8);
-            
-            const cats = sorted.map(([k]) => k.length > 16 ? k.substring(0, 16) + '…' : k);
-            const seriesData = sorted.map(([, v]) => v);
-            
-            // تدرج ألوان أخضر
-            const barColors = ['#1B4332','#2D6A4F','#40916C','#52B788','#74C69D','#95D5B2','#B7E4C7','#D8F3DC'];
-            
-            const options = {
-                series: [{ name: filter.includes('Beneficiaries') || filter.includes('Comparison') ? 'المستفيدين' : 'المناشط', data: seriesData }],
-                chart: {
-                    type: 'bar', height: 300,
-                    fontFamily: 'Noto Sans Arabic, sans-serif',
-                    toolbar: { show: false },
-                    background: colors.bg,
-                    animations: { enabled: true, easing: 'easeinout', speed: 900 }
-                },
-                colors: barColors,
-                plotOptions: { bar: { borderRadius: 8, horizontal: true, distributed: true, barHeight: '65%',
-                    dataLabels: { position: 'top' }
-                } },
-                dataLabels: {
-                    enabled: true,
-                    textAnchor: 'start',
-                    formatter: val => val.toLocaleString('ar-SA'),
-                    style: { colors: ['#fff'], fontSize: '11px', fontWeight: 700 },
-                    offsetX: 8
-                },
-                xaxis: { categories: cats, labels: { style: { colors: colors.text, fontSize: '10px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
-                yaxis: { labels: { style: { colors: isDarkMode() ? '#ccc' : '#444', fontSize: '11px', fontWeight: 600 } } },
-                grid: { borderColor: colors.grid, strokeDashArray: 0, xaxis: { lines: { show: true } }, yaxis: { lines: { show: false } } },
-                legend: { show: false },
-                tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
-            };
-
-            if (barChart) barChart.destroy();
-            barChart = new ApexCharts(document.getElementById('barChart'), options);
-            barChart.render();
-        }
-
-        // ========== المخطط المتقدم ==========
-        function updateAdvancedChart() {
-            if (activities.length === 0) return;
-            const filter = document.getElementById('advancedFilter').value;
-            const colors = getChartColors();
-            let options = {};
-            
-            const baseChartConfig = {
-                fontFamily: 'Noto Sans Arabic', toolbar: { show: false }, background: colors.bg,
-                animations: { enabled: true, easing: 'easeinout', speed: 900 }
-            };
-            
-            switch(filter) {
-                case 'classificationTrend':
-                    const dateClassData = {};
-                    const allDates = [...new Set(activities.map(a => a.date))].sort();
-                    const allClasses = [...new Set(activities.map(a => a.classification))];
-                    
-                    allClasses.forEach(cls => {
-                        dateClassData[cls] = allDates.map(date => 
-                            activities.filter(a => a.date === date && a.classification === cls)
-                                .reduce((sum, a) => sum + a.beneficiaries, 0)
-                        );
-                    });
-                    
-                    options = {
-                        series: allClasses.map(cls => ({ name: shortNames[cls] || cls, data: dateClassData[cls] })),
-                        chart: { ...baseChartConfig, type: 'line', height: 260 },
-                        colors: Object.values(classColors),
-                        stroke: { curve: 'smooth', width: 2.5 },
-                        markers: { size: 3, strokeWidth: 0 },
-                        xaxis: { categories: allDates.map(d => d.split('/').slice(1).join('/')), labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 }, axisBorder: { show: false }, axisTicks: { show: false } },
-                        yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' } } },
-                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
-                        legend: { position: 'top', fontSize: '10px', fontWeight: 600, labels: { colors: isDarkMode() ? '#ccc' : '#555' }, markers: { radius: 3 } },
-                        tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
-                    };
-                    break;
-                    
-                case 'weekdayAnalysis':
-                    const weekdays = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-                    const weekdayData = { count: Array(7).fill(0), beneficiaries: Array(7).fill(0) };
-                    
-                    activities.forEach(a => {
-                        const date = new Date(a.date.replace(/\//g, '-'));
-                        const day = date.getDay();
-                        weekdayData.count[day]++;
-                        weekdayData.beneficiaries[day] += a.beneficiaries;
-                    });
-                    
-                    options = {
-                        series: [
-                            { name: 'عدد المناشط', data: weekdayData.count },
-                            { name: 'المستفيدين', data: weekdayData.beneficiaries }
-                        ],
-                        chart: { ...baseChartConfig, type: 'bar', height: 260 },
-                        colors: ['#2D6A4F', '#FF8B8B'],
-                        plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
-                        xaxis: { categories: weekdays, labels: { style: { colors: colors.text, fontSize: '10px', fontWeight: 500 } }, axisBorder: { show: false }, axisTicks: { show: false } },
-                        yaxis: [
-                            { title: { text: 'المناشط', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } },
-                            { opposite: true, title: { text: 'المستفيدين', style: { color: colors.text, fontSize: '10px' } }, labels: { style: { colors: colors.text } } }
-                        ],
-                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
-                        legend: { position: 'top', fontSize: '10px', fontWeight: 600, labels: { colors: isDarkMode() ? '#ccc' : '#555' }, markers: { radius: 3 } },
-                        tooltip: { theme: isDarkMode() ? 'dark' : 'light' }
-                    };
-                    break;
-                    
-                case 'cumulativeGrowth':
-                    const sortedAct = [...activities].sort((a, b) => new Date(a.date) - new Date(b.date));
-                    let cumulative = 0;
-                    const cumulativeData = sortedAct.map(a => {
-                        cumulative += a.beneficiaries;
-                        return { x: a.date.split('/').slice(1).join('/'), y: cumulative };
-                    });
-                    
-                    options = {
-                        series: [{ name: 'النمو التراكمي', data: cumulativeData }],
-                        chart: { ...baseChartConfig, type: 'area', height: 260 },
-                        colors: ['#2D6A4F'],
-                        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 90, 100] } },
-                        stroke: { curve: 'smooth', width: 3 },
-                        dataLabels: { enabled: false },
-                        xaxis: { type: 'category', labels: { style: { colors: colors.text, fontSize: '9px' }, rotate: -45 }, axisBorder: { show: false }, axisTicks: { show: false } },
-                        yaxis: { labels: { style: { colors: colors.text, fontSize: '10px' }, formatter: val => val.toLocaleString('ar-SA') } },
-                        grid: { borderColor: colors.grid, strokeDashArray: 0 },
-                        tooltip: { theme: isDarkMode() ? 'dark' : 'light', y: { formatter: val => val.toLocaleString('ar-SA') + ' مستفيد (تراكمي)' } }
-                    };
-                    break;
-            }
-
-            if (advancedChart) advancedChart.destroy();
-            advancedChart = new ApexCharts(document.getElementById('advancedChart'), options);
-            advancedChart.render();
-        }
-
-        // ========== جلب البيانات ==========
-        async function loadData() {
-            const indicator = document.getElementById('refresh-indicator');
-            const refreshBtn = document.getElementById('refresh-btn');
-            indicator.classList.remove('hidden');
-            refreshBtn.classList.add('animate-spin');
-            
-            try {
-                const response = await fetch(DATA_ENDPOINT);
-                if (!response.ok) throw new Error('فشل');
-                
-                const data = await response.json();
-                const raw = Array.isArray(data) ? data : (data.data || []);
-                
-                activities = raw.map(item => ({
-                    date: item.executionDate || '',
-                    beneficiaries: item.beneficiariesCount || 0,
-                    classification: item.classification || '',
-                    audience: Array.isArray(item.targetAudience) ? item.targetAudience.join(', ') : (item.targetAudience || ''),
-                    type: item.programType || 'حضوري',
-                    executor: item.executorName || '',
-                    category: item.programCategory || ''
-                }));
-                
-                updateAllCharts();
-                
-            } catch (error) {
-                console.error('خطأ:', error);
-                document.getElementById('kpi-beneficiaries').textContent = '!';
-                document.getElementById('kpi-activities').textContent = '!';
-                document.getElementById('kpi-executors').textContent = '!';
-                document.getElementById('kpi-avg').textContent = '!';
-            } finally {
-                indicator.classList.add('hidden');
-                refreshBtn.classList.remove('animate-spin');
-            }
-        }
-        
-        function updateAllCharts() {
-            if (activities.length === 0) return;
-            updateKPIs();
-            createPieChart();
-            updateLineChart();
-            updateBarChart();
-            updateAdvancedChart();
-        }
-
-        function startAutoRefresh() {
-            setInterval(loadData, REFRESH_INTERVAL);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadData();
-            startAutoRefresh();
+    function makeSparklines(){
+        if(!activities.length)return;
+        const dMap={},aMap={};
+        activities.forEach(a=>{const d=a.date.split('/').slice(1).join('/');dMap[d]=(dMap[d]||0)+a.beneficiaries;aMap[d]=(aMap[d]||0)+1});
+        const dv=Object.values(dMap),av=Object.values(aMap);
+        Object.values(sparks).forEach(c=>c&&c.destroy());sparks={};
+        const cfg=(data,color)=>({series:[{data}],chart:{type:'area',height:40,sparkline:{enabled:true},background:'transparent'},colors:[color],fill:{type:'gradient',gradient:{shadeIntensity:1,opacityFrom:.3,opacityTo:.05}},stroke:{curve:'smooth',width:2},tooltip:{enabled:false}});
+        [{id:'spark-ben',d:dv,c:'#3B82F6'},{id:'spark-act',d:av,c:'#EF4444'},{id:'spark-exec',d:av.map((_,i)=>Math.max(1,av[i])),c:'#8B5CF6'},{id:'spark-avg',d:dv.map((v,i)=>Math.round(v/(av[i]||1))),c:'#F59E0B'}].forEach(s=>{
+            const el=document.getElementById(s.id);
+            if(el&&s.d.length>1){el.innerHTML='';sparks[s.id]=new ApexCharts(el,cfg(s.d,s.c));sparks[s.id].render()}
         });
-    </script>
+    }
 
+    function makeClsBars(){
+        if(!activities.length)return;
+        const cd={};activities.forEach(a=>{cd[a.classification]=(cd[a.classification]||0)+a.beneficiaries});
+        const total=Object.values(cd).reduce((a,b)=>a+b,0);
+        const sorted=Object.entries(cd).sort((a,b)=>b[1]-a[1]);
+        const bc={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#10B981','الأمن الفكري والفكر المعتدل':'#F59E0B'};
+        const el=document.getElementById('cls-bars');
+        el.innerHTML=sorted.map(([cls,val])=>{
+            const pct=((val/total)*100).toFixed(1);const color=bc[cls]||'#3D7A5A';const name=shortNames[cls]||cls;
+            return`<div>
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full" style="background:${color}"></div><span class="text-xs font-semibold text-slate-700 dark:text-slate-300">${name}</span></div>
+                    <div class="flex items-center gap-2"><span class="text-xs font-bold text-slate-900 dark:text-white">${val.toLocaleString('ar-SA')}</span><span class="text-[10px] font-medium text-slate-400">${pct}%</span></div>
+                </div>
+                <div class="progress-track"><div class="progress-fill" data-w="${pct}" style="background:linear-gradient(90deg,${color},${color}88)"></div></div>
+            </div>`;
+        }).join('');
+        requestAnimationFrame(()=>setTimeout(()=>el.querySelectorAll('.progress-fill').forEach(b=>{b.style.width=b.dataset.w+'%'}),100));
+    }
+
+    function makeTopExec(){
+        if(!activities.length)return;
+        const ed={};activities.forEach(a=>{if(!ed[a.executor])ed[a.executor]={c:0,b:0};ed[a.executor].c++;ed[a.executor].b+=a.beneficiaries});
+        const sorted=Object.entries(ed).sort((a,b)=>b[1].b-a[1].b).slice(0,5);
+        const max=sorted[0]?.[1]?.b||1;
+        const rc=['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6'];
+        const el=document.getElementById('top-exec');
+        el.innerHTML=sorted.map(([name,data],i)=>{
+            const pct=((data.b/max)*100).toFixed(0);
+            return`<div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style="background:${rc[i]}">${i+1}</div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">${name}</span>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            <span class="text-[10px] text-slate-400">${data.c} نشاط</span>
+                            <span class="text-xs font-bold text-slate-900 dark:text-white">${data.b.toLocaleString('ar-SA')}</span>
+                        </div>
+                    </div>
+                    <div class="progress-track" style="height:6px"><div class="progress-fill" data-w="${pct}" style="background:${rc[i]};width:0"></div></div>
+                </div>
+            </div>`;
+        }).join('');
+        requestAnimationFrame(()=>setTimeout(()=>el.querySelectorAll('.progress-fill').forEach(b=>{b.style.width=b.dataset.w+'%'}),300));
+    }
+
+    function makePie(){
+        if(!activities.length)return;const c=cc();
+        const cd={};activities.forEach(a=>{cd[a.classification]=(cd[a.classification]||0)+a.beneficiaries});
+        const labels=Object.keys(cd).map(k=>shortNames[k]||k),series=Object.values(cd),colors=Object.keys(cd).map(k=>classColors[k]||'#3B82F6');
+        const opts={series,chart:{type:'donut',height:260,fontFamily:'Noto Sans Arabic',background:'transparent'},labels,colors,
+            plotOptions:{pie:{donut:{size:'65%',labels:{show:true,name:{show:true,fontSize:'13px',color:c.t,offsetY:-4},value:{show:true,fontSize:'20px',fontWeight:'800',color:isDark()?'#fff':'#1e293b',offsetY:4,formatter:v=>parseInt(v).toLocaleString('ar-SA')},total:{show:true,label:'الإجمالي',fontSize:'11px',color:c.t,formatter:w=>w.globals.seriesTotals.reduce((a,b)=>a+b,0).toLocaleString('ar-SA')}}}}},
+            legend:{position:'bottom',fontSize:'11px',fontWeight:600,labels:{colors:c.t},markers:{radius:4}},
+            dataLabels:{enabled:true,formatter:v=>v.toFixed(0)+'%',style:{fontSize:'11px',fontWeight:700},dropShadow:{enabled:false}},
+            stroke:{show:true,width:3,colors:[c.c]},
+            tooltip:{y:{formatter:v=>v.toLocaleString('ar-SA')+' مستفيد'}}
+        };
+        if(pieChart)pieChart.destroy();pieChart=new ApexCharts(document.getElementById('pieChart'),opts);pieChart.render();
+    }
+
+    function updateLineChart(){
+        if(!activities.length)return;const f=document.getElementById('lineFilter').value,c=cc();
+        let d={},type='area';
+        switch(f){
+            case'byDate':activities.forEach(a=>{const k=a.date.split('/').slice(1).join('/');d[k]=(d[k]||0)+a.beneficiaries});break;
+            case'byClassification':activities.forEach(a=>{const n=shortNames[a.classification]||a.classification;d[n]=(d[n]||0)+a.beneficiaries});type='bar';break;
+            case'byCategory':activities.forEach(a=>{d[a.category]=(d[a.category]||0)+a.beneficiaries});type='bar';break;
+            case'byType':activities.forEach(a=>{d[a.type]=(d[a.type]||0)+a.beneficiaries});type='bar';break;
+        }
+        const cats=Object.keys(d),vals=Object.values(d);
+        const opts={series:[{name:'المستفيدين',data:vals}],
+            chart:{type,height:240,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,easing:'easeinout',speed:600}},
+            colors:type==='bar'?['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899']:['#3B82F6'],
+            fill:type==='area'?{type:'gradient',gradient:{shadeIntensity:1,opacityFrom:.35,opacityTo:.05,stops:[0,90,100]}}:{opacity:.9},
+            stroke:{curve:'smooth',width:type==='area'?3:0},
+            plotOptions:type==='bar'?{bar:{borderRadius:8,columnWidth:'55%',distributed:true}}:{},
+            dataLabels:{enabled:type==='bar',style:{fontSize:'10px',fontWeight:700},offsetY:-4},
+            legend:{show:type!=='bar'?true:false},
+            xaxis:{categories:cats,labels:{style:{colors:c.t,fontSize:'10px'},rotate:-45,rotateAlways:cats.length>5},axisBorder:{show:false},axisTicks:{show:false}},
+            yaxis:{labels:{style:{colors:c.t,fontSize:'10px'}}},
+            grid:{borderColor:c.g,strokeDashArray:0,padding:{bottom:0}},
+            tooltip:{theme:isDark()?'dark':'light',y:{formatter:v=>v.toLocaleString('ar-SA')+' مستفيد'}}
+        };
+        if(lineChart)lineChart.destroy();lineChart=new ApexCharts(document.getElementById('lineChart'),opts);lineChart.render();
+    }
+
+    function updateBarChart(){
+        if(!activities.length)return;const f=document.getElementById('barFilter').value,c=cc();
+        let d={};
+        switch(f){
+            case'topExecutors':activities.forEach(a=>{d[a.executor]=(d[a.executor]||0)+1});break;
+            case'executorsBeneficiaries':activities.forEach(a=>{d[a.executor]=(d[a.executor]||0)+a.beneficiaries});break;
+            case'audienceComparison':activities.forEach(a=>{a.audience.split(',').map(s=>s.trim()).forEach(au=>{d[au]=(d[au]||0)+a.beneficiaries})});break;
+            case'categoryComparison':activities.forEach(a=>{d[a.category]=(d[a.category]||0)+a.beneficiaries});break;
+        }
+        let sorted=Object.entries(d).sort((a,b)=>b[1]-a[1]);
+        if(f==='topExecutors'||f==='executorsBeneficiaries')sorted=sorted.slice(0,8);
+        const cats=sorted.map(([k])=>k.length>16?k.substring(0,16)+'…':k),vals=sorted.map(([,v])=>v);
+        const gc=['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316'];
+        const opts={series:[{name:f.includes('Beneficiaries')||f.includes('Comparison')?'المستفيدين':'المناشط',data:vals}],
+            chart:{type:'bar',height:300,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,speed:600}},
+            colors:gc,
+            plotOptions:{bar:{borderRadius:8,horizontal:true,distributed:true,barHeight:'65%'}},
+            dataLabels:{enabled:true,textAnchor:'start',formatter:v=>v.toLocaleString('ar-SA'),style:{colors:['#fff'],fontSize:'11px',fontWeight:700},offsetX:8},
+            xaxis:{categories:cats,labels:{style:{colors:c.t,fontSize:'10px'}},axisBorder:{show:false},axisTicks:{show:false}},
+            yaxis:{labels:{style:{colors:c.t,fontSize:'10px',fontWeight:600},maxWidth:120}},
+            grid:{borderColor:c.g,strokeDashArray:0,xaxis:{lines:{show:true}},yaxis:{lines:{show:false}}},
+            legend:{show:false},
+            tooltip:{theme:isDark()?'dark':'light'}
+        };
+        if(barChart)barChart.destroy();barChart=new ApexCharts(document.getElementById('barChart'),opts);barChart.render();
+    }
+
+    function updateAdvChart(){
+        if(!activities.length)return;const f=document.getElementById('advFilter').value,c=cc();
+        let opts={};
+        switch(f){
+            case'classificationTrend':{
+                const dcd={},ad=[...new Set(activities.map(a=>a.date))].sort(),ac=[...new Set(activities.map(a=>a.classification))];
+                ac.forEach(cls=>{dcd[cls]=ad.map(d=>activities.filter(a=>a.date===d&&a.classification===cls).reduce((s,a)=>s+a.beneficiaries,0))});
+                opts={series:ac.map(cls=>({name:shortNames[cls]||cls,data:dcd[cls]})),
+                    chart:{type:'line',height:260,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,speed:600}},
+                    colors:Object.values(classColors),stroke:{curve:'smooth',width:2.5},markers:{size:3,strokeWidth:0},
+                    xaxis:{categories:ad.map(d=>d.split('/').slice(1).join('/')),labels:{style:{colors:c.t,fontSize:'9px'},rotate:-45},axisBorder:{show:false}},
+                    yaxis:{labels:{style:{colors:c.t,fontSize:'10px'}}},grid:{borderColor:c.g,strokeDashArray:0},
+                    legend:{position:'top',fontSize:'10px',fontWeight:600,labels:{colors:c.t},markers:{radius:3}},
+                    tooltip:{theme:isDark()?'dark':'light'}};break;
+            }
+            case'weekdayAnalysis':{
+                const wd=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],w={c:Array(7).fill(0),b:Array(7).fill(0)};
+                activities.forEach(a=>{const d=new Date(a.date.replace(/\//g,'-'));const day=d.getDay();w.c[day]++;w.b[day]+=a.beneficiaries});
+                opts={series:[{name:'عدد المناشط',data:w.c},{name:'المستفيدين',data:w.b}],
+                    chart:{type:'bar',height:260,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent'},
+                    colors:['#3B82F6','#EF4444'],plotOptions:{bar:{borderRadius:6,columnWidth:'55%'}},
+                    xaxis:{categories:wd,labels:{style:{colors:c.t,fontSize:'10px'}},axisBorder:{show:false}},
+                    yaxis:[{title:{text:'المناشط',style:{color:c.t,fontSize:'10px'}},labels:{style:{colors:c.t}}},{opposite:true,title:{text:'المستفيدين',style:{color:c.t,fontSize:'10px'}},labels:{style:{colors:c.t}}}],
+                    grid:{borderColor:c.g,strokeDashArray:0},legend:{position:'top',fontSize:'10px',fontWeight:600,labels:{colors:c.t},markers:{radius:3}},
+                    tooltip:{theme:isDark()?'dark':'light'}};break;
+            }
+            case'cumulativeGrowth':{
+                const sa=[...activities].sort((a,b)=>new Date(a.date)-new Date(b.date));let cum=0;
+                const cd=sa.map(a=>{cum+=a.beneficiaries;return{x:a.date.split('/').slice(1).join('/'),y:cum}});
+                opts={series:[{name:'النمو التراكمي',data:cd}],
+                    chart:{type:'area',height:260,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent'},
+                    colors:['#3B82F6'],fill:{type:'gradient',gradient:{shadeIntensity:1,opacityFrom:.4,opacityTo:.05,stops:[0,90,100]}},
+                    stroke:{curve:'smooth',width:3},dataLabels:{enabled:false},
+                    xaxis:{type:'category',labels:{style:{colors:c.t,fontSize:'9px'},rotate:-45},axisBorder:{show:false}},
+                    yaxis:{labels:{style:{colors:c.t,fontSize:'10px'},formatter:v=>v.toLocaleString('ar-SA')}},
+                    grid:{borderColor:c.g,strokeDashArray:0},
+                    tooltip:{theme:isDark()?'dark':'light',y:{formatter:v=>v.toLocaleString('ar-SA')+' مستفيد (تراكمي)'}}};break;
+            }
+        }
+        if(advChart)advChart.destroy();advChart=new ApexCharts(document.getElementById('advChart'),opts);advChart.render();
+    }
+
+    async function loadData(){
+        const ind=document.getElementById('refresh-indicator');ind.classList.remove('hidden');
+        try{
+            const res=await fetch(DATA_ENDPOINT);if(!res.ok)throw new Error('fail');
+            const data=await res.json();
+            const m=i=>({date:i.executionDate||'',beneficiaries:i.beneficiariesCount||0,classification:i.classification||'',audience:Array.isArray(i.targetAudience)?i.targetAudience.join(', '):(i.targetAudience||''),type:i.programType||'حضوري',executor:i.executorName||'',category:i.programCategory||''});
+            activities=Array.isArray(data)?data.map(m):data.data&&Array.isArray(data.data)?data.data.map(m):[];
+            updateAll();
+        }catch(e){
+            console.error(e);['kpi-beneficiaries','kpi-activities','kpi-executors','kpi-avg'].forEach(id=>{document.getElementById(id).textContent='!'});
+        }finally{ind.classList.add('hidden')}
+    }
+
+    function updateAll(){
+        if(!activities.length)return;
+        updateKPIs();makeSparklines();makeClsBars();makeTopExec();makePie();updateLineChart();updateBarChart();updateAdvChart();
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{loadData();setInterval(loadData,REFRESH_INTERVAL)});
+    </script>
 </body>
 </html>
