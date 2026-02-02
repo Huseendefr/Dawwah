@@ -85,7 +85,7 @@
         const REFRESH_INTERVAL=30000;
         let activities=[];
         const shortNames={'الشريعة والفقه والعبادات':'الشريعة','التوحيد والعقيدة':'التوحيد','الأخلاق والسلوك والأداب':'الأخلاق','الأمن الفكري والفكر المعتدل':'الأمن الفكري'};
-        const classColors={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#10B981','الأمن الفكري والفكر المعتدل':'#F59E0B'};
+        const classColors={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#22C55E','الأمن الفكري والفكر المعتدل':'#F59E0B'};
         const extraPalette=['#8B5CF6','#EC4899','#06B6D4','#F97316','#14B8A6','#A855F7'];
         function getColor(cls,i){return classColors[cls]||extraPalette[i%extraPalette.length]}
     </script>
@@ -327,7 +327,7 @@
         const cd={};activities.forEach(a=>{cd[a.classification]=(cd[a.classification]||0)+a.beneficiaries});
         const total=Object.values(cd).reduce((a,b)=>a+b,0);
         const sorted=Object.entries(cd).sort((a,b)=>b[1]-a[1]);
-        const bc={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#10B981','الأمن الفكري والفكر المعتدل':'#F59E0B'};
+        const bc={'الشريعة والفقه والعبادات':'#3B82F6','التوحيد والعقيدة':'#EF4444','الأخلاق والسلوك والأداب':'#22C55E','الأمن الفكري والفكر المعتدل':'#F59E0B'};
         const el=document.getElementById('cls-bars');
         el.innerHTML=sorted.map(([cls,val],i)=>{
             const pct=((val/total)*100).toFixed(1);const color=bc[cls]||extraPalette[i%extraPalette.length];const name=shortNames[cls]||cls;
@@ -347,7 +347,7 @@
         const ed={};activities.forEach(a=>{if(!ed[a.executor])ed[a.executor]={c:0,b:0};ed[a.executor].c++;ed[a.executor].b+=a.beneficiaries});
         const sorted=Object.entries(ed).sort((a,b)=>b[1].b-a[1].b).slice(0,5);
         const max=sorted[0]?.[1]?.b||1;
-        const rc=['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6'];
+        const rc=['#3B82F6','#EF4444','#22C55E','#F59E0B','#8B5CF6'];
         const el=document.getElementById('top-exec');
         el.innerHTML=sorted.map(([name,data],i)=>{
             const pct=((data.b/max)*100).toFixed(0);
@@ -394,7 +394,7 @@
         const cats=Object.keys(d),vals=Object.values(d);
         const opts={series:[{name:'المستفيدين',data:vals}],
             chart:{type,height:240,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,easing:'easeinout',speed:600}},
-            colors:type==='bar'?['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899']:['#3B82F6'],
+            colors:type==='bar'?['#3B82F6','#EF4444','#22C55E','#F59E0B','#8B5CF6','#EC4899']:['#3B82F6'],
             fill:type==='area'?{type:'gradient',gradient:{shadeIntensity:1,opacityFrom:.35,opacityTo:.05,stops:[0,90,100]}}:{opacity:.9},
             stroke:{curve:'smooth',width:type==='area'?3:0},
             plotOptions:type==='bar'?{bar:{borderRadius:8,columnWidth:'55%',distributed:true}}:{},
@@ -420,7 +420,7 @@
         let sorted=Object.entries(d).sort((a,b)=>b[1]-a[1]);
         if(f==='topExecutors'||f==='executorsBeneficiaries')sorted=sorted.slice(0,8);
         const cats=sorted.map(([k])=>k.length>16?k.substring(0,16)+'…':k),vals=sorted.map(([,v])=>v);
-        const gc=['#3B82F6','#EF4444','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316'];
+        const gc=['#3B82F6','#EF4444','#22C55E','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316'];
         const opts={series:[{name:f.includes('Beneficiaries')||f.includes('Comparison')?'المستفيدين':'المناشط',data:vals}],
             chart:{type:'bar',height:300,fontFamily:'Noto Sans Arabic',toolbar:{show:false},background:'transparent',animations:{enabled:true,speed:600}},
             colors:gc,
